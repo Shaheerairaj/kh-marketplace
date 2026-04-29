@@ -1,0 +1,8 @@
+{
+    "name": "kh-concept-brief-plugin",
+    "description":"A plugin to help create hotel concept briefs",
+    "version":"0.0.1",
+    "author":{
+        "name":"shaheer"
+      }
+  }
