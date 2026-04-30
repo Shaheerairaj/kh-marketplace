@@ -1,0 +1,13 @@
+{
+  "name": "kh-marketplace",
+  "owner": {
+    "name": "Shaheer Airaj"
+  },
+  "plugins": [
+    {
+      "name": "concept-brief-plugin",
+      "source": "./pluginsconcept-brief-plugin/",
+      "description": "Helps the Kerten Hospitality team build a concept brief for a property they are trying to pitch their hospitality services to"
+    }
+  ]
+}
