@@ -45,13 +45,66 @@ If there is not enough information to make a meaningful proposal for a field, as
 ## Workflow: Build Concept Brief
 
 ### Step 1 — Property Metadata
-Read `references/sections/01-property-metadata.md` for field definitions, proposal guidance, and artifact format.
-Read `references/kh-brands.md` to inform the Brand Fit Hypothesis field.
 
-### Step 2 — Positioning Thesis
-Read `references/sections/02-positioning-thesis.md` for proposal guidance and quality bar.
-Read `references/kh-brands.md` if not already in context.
+**Purpose:** Establish the factual foundation of the property before any creative or strategic work begins.
+
+| Field | Description |
+|---|---|
+| Property name | Full name or working title of the property |
+| Location | City, country, and neighbourhood or district if known |
+| Keys | Number of hotel rooms. If unknown, record as TBD |
+| Owner | Owner's name and company or entity |
+| Positioning tier | Budget / Midscale / Upper Midscale / Upscale / Upper Upscale / Luxury |
+| Brand fit hypothesis | Which Kerten brand is being considered and the initial rationale |
+
+Gather fields through conversation — one question at a time, not a list. For **Brand Fit Hypothesis**: propose based on positioning tier and location rather than waiting for the user to volunteer it. Read `references/kh-brands.md` to inform the proposal; if the tier and location clearly point to one brand, name it and explain why in one sentence. If there is genuine ambiguity, surface both and ask the user to steer. Scan `references/deck-examples/INDEX.md` to identify past brand selections in similar market contexts — use this to strengthen or challenge the hypothesis.
+
+**Artifact format:**
+
+    ## Property Metadata
+    - **Property name:** [value]
+    - **Location:** [value]
+    - **Keys:** [value]
+    - **Owner:** [value]
+    - **Positioning tier:** [value]
+    - **Brand fit hypothesis:** [value]
 
 ---
 
-_Steps 3–15 will be added as subsequent sections are built out._
+### Step 2 — Positioning Thesis
+
+**Purpose:** A single sentence capturing why Kerten is the right operator for this property and what the winning angle is. Everything downstream should be traceable back to it.
+
+Read `references/kh-brands.md` if not already in context. Synthesise from Step 1 and any additional context in the conversation. A strong thesis names the specific Kerten brand, the market gap or opportunity, the segment or location context, and the owner alignment or deal rationale. Do not make a generic claim about Kerten's capabilities — push toward specificity at every iteration.
+
+**Weak:** "Kerten brings lifestyle hospitality expertise to this market."
+**Strong:** "Cloud 7's tech-forward lifestyle positioning fills a gap in Dubai Marina's midscale segment, where the owner's investment-focused priorities align with Kerten's asset-light management model."
+
+If any of the four elements (brand, gap, segment, owner alignment) are missing, point out what is absent and propose a revision that adds it.
+
+**Artifact format:**
+
+    ## Positioning Thesis
+    [One sentence]
+
+### Step 3 — Concept Direction
+Read `references/sections/03-concept-direction.md` for field definitions, sub-section guidance, and quality bar.
+Read `references/deck-examples/INDEX.md` if not already in context; identify the 1–2 examples closest to the current brand and market type; load those full files as pattern reference for Vision and Pillars proposals.
+
+### Step 4 — Owner Context
+Read `references/sections/04-owner-context.md` for the three-input flow: relationship intelligence intake, web research, and archetype matching.
+Read `references/kh-owner-archetypes.md` to identify the owner's primary archetype after intake and research are complete.
+Use web search to research the owner or developer — company background, portfolio, track record, and any public statements on investment strategy.
+
+### Step 5 — Key Messages
+Read `references/sections/05-key-messages.md` for proposal approach and quality bar.
+Key Messages are derived entirely from the confirmed Owner Context (Step 4) — do not begin this step until Step 4 is saved to the artifact.
+
+### Step 6 — Experience Inventory
+Read `references/sections/06-experience-inventory.md` for sub-section guidance and quality bar.
+Read `references/kh-fnb-brands.md` to match F&B brands to this property — do not propose F&B concepts without consulting this first.
+Do not begin this step until Step 3 (Concept Direction) is confirmed.
+
+---
+
+_Steps 7–15 will be added as subsequent sections are built out._
