@@ -122,8 +122,8 @@ The Direction Document is stored as structured Markdown with defined H2 sections
 | Concept Direction | Required | Vision, pillars, target guest, differentiators |
 | Owner Context | Required | Priorities, pain points, known preferences, what they are avoiding |
 | Key Messages / Proof Points | Required | Pitch arguments to hammer |
-| Competitive Set & Market Dynamics | Required | Free-text market thesis + optional benchmark hotels (~5) |
 | Experience Inventory | Required | F&B, wellness, signature experiences |
+| Competitive Set & Market Dynamics | Required | Free-text market thesis + optional benchmark hotels (~5) |
 | Asset Assessment | Required | Strengths, weaknesses, opportunities of the physical property |
 | Financial Anchors | Required | Comp set benchmarks sourced from Lighthouse; ADR and occupancy are not available via Lighthouse and must be manually entered or flagged as absent |
 | Commercial Terms | Required | Management fee, royalty, and other fee levels; AI suggests starting position based on market context and positioning thesis; BD tunes |
