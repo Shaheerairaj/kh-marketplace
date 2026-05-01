@@ -1,20 +1,21 @@
 ---
 name: concept-briefing
-description: Guides a section-by-section Direction Document conversation for a Kerten Hospitality hotel management proposal. Activates when a user begins discussing a new property, deal, or concept brief. Manages a running artifact that records confirmed sections.
+description: Guides a Direction Document session for a Kerten Hospitality hotel management proposal. Activates when a user begins discussing a new property, deal, or concept brief. Presents an interactive intake form, runs market and owner research, then auto-drafts all derived sections for validation.
 ---
 
 ## Purpose
 
-Drive a structured, conversational Direction Document session for a Kerten Hospitality hotel management proposal. Work through sections one at a time: propose content, confirm with the user, write to the artifact, advance. The artifact is the single record of everything decided — downstream pipeline agents are driven from it with no further human input.
+Drive a structured Direction Document session for a Kerten Hospitality hotel management proposal. Collect seed information through a single interactive form, run research, then auto-draft all derived sections for the user to review and confirm. The artifact is the single record of everything decided — downstream pipeline agents are driven from it with no further human input.
 
 ## Session Start
 
-Before beginning, check for an existing artifact in the current working directory:
+Before beginning, check for two things:
 
-- If the property name is known, look for `concept-brief-[slugified-property-name].md`
-- If the property name is not yet known, list any `concept-brief-*.md` files and ask if the user is resuming one
-- If a file exists: read it, identify the last confirmed section, tell the user where you are picking up from, and resume from the next section
-- If no file exists: copy `assets/concept-brief-template.md` to `concept-brief-[slugified-property-name].md` and begin from Step 1
+**1. Existing artifact** — look for `concept-brief-*.md` in the current working directory:
+- If found: list the file(s) and ask whether the user wants to resume or start a new brief. If resuming, read the file, identify the last confirmed section, and pick up from there.
+- If not found: proceed to Phase A.
+
+**2. RFP or brief document** — check whether the user has uploaded a document (RFP, owner brief, or property summary). If yes, extract available answers before the form is displayed — the `/start-concept-brief` command handles pre-population.
 
 ## Artifact Management
 
@@ -23,41 +24,47 @@ Example: "Dubai Marina Residences" → `concept-brief-dubai-marina-residences.md
 
 **Location:** current working directory
 
-**After each confirmed section:** append the section to the end of the file. Never overwrite or modify already-confirmed sections.
+**Write sections in schema order** (as listed in Phase C). After the user confirms each section, append it to the artifact. Never overwrite or modify already-confirmed sections.
 
-**After writing:** tell the user: "Saved to `concept-brief-[name].md`" and immediately advance to the next step.
-
-## Conversation Protocol
-
-Repeat this loop for every section:
-
-1. **Announce** — state the section name and its one-line purpose
-2. **Propose** — draft content based on everything discussed so far. Always lead with a concrete proposal; never ask a blank open question
-3. **Refine** — iterate with the user until they are satisfied
-4. **Confirm** — ask explicitly: "Happy for me to save this?"
-5. **Write** — append the confirmed section to the artifact
-6. **Advance** — move to the next step
-
-If there is not enough information to make a meaningful proposal for a field, ask one targeted question to unblock — then propose.
+After each write: confirm to the user which section was saved and advance to the next.
 
 ---
 
-## Workflow: Build Concept Brief
+## Phase A — Seed Collection
 
-### Step 1 — Property Metadata
+Display the intake form as defined in `/start-concept-brief`. Do not ask questions one at a time.
 
-**Purpose:** Establish the factual foundation of the property before any creative or strategic work begins.
+Once the user submits: acknowledge the answers, note any required fields left blank (name, location, deal type), and move immediately to Phase B.
 
-| Field | Description |
-|---|---|
-| Property name | Full name or working title of the property |
-| Location | City, country, and neighbourhood or district if known |
-| Keys | Number of hotel rooms. If unknown, record as TBD |
-| Owner | Owner's name and company or entity |
-| Positioning tier | Budget / Midscale / Upper Midscale / Upscale / Upper Upscale / Luxury |
-| Brand fit hypothesis | Which Kerten brand is being considered and the initial rationale |
+If required fields are blank, ask only for those — do not re-show the full form.
 
-Gather fields through conversation — one question at a time, not a list. For **Brand Fit Hypothesis**: propose based on positioning tier and location rather than waiting for the user to volunteer it. Read `references/kh-brands.md` to inform the proposal; if the tier and location clearly point to one brand, name it and explain why in one sentence. If there is genuine ambiguity, surface both and ask the user to steer. Scan `references/deck-examples/INDEX.md` to identify past brand selections in similar market contexts — use this to strengthen or challenge the hypothesis.
+---
+
+## Phase B — Research
+
+Tell the user: *"Got it. Running market and owner research — give me a moment."*
+
+Run the following in parallel without surfacing raw results to the user:
+
+- **Competitive set** — web search for comparable hotels in the same city/district and positioning tier. Identify 3–5 direct competitors: brand, positioning, key features, any known performance signals.
+- **Owner background** — web search for the owner or developer: company background, portfolio, track record, any public statements on investment strategy or brand preferences.
+
+Synthesise findings internally — they feed Phase C drafts directly.
+
+---
+
+## Phase C — Auto-draft and Validate
+
+Draft all derived sections in schema order. For each section:
+1. Present the draft
+2. Ask: *"Happy with this, or any changes?"*
+3. On confirmation, write to artifact and advance
+
+---
+
+### Section 1 — Property Metadata
+
+Write directly from Phase A answers — no drafting needed. Present for confirmation and save.
 
 **Artifact format:**
 
@@ -65,46 +72,203 @@ Gather fields through conversation — one question at a time, not a list. For *
     - **Property name:** [value]
     - **Location:** [value]
     - **Keys:** [value]
-    - **Owner:** [value]
-    - **Positioning tier:** [value]
-    - **Brand fit hypothesis:** [value]
+    - **Brand:** [value]
+    - **Deal type:** [value]
 
 ---
 
-### Step 2 — Positioning Thesis
+### Section 2 — Owner Context
 
-**Purpose:** A single sentence capturing why Kerten is the right operator for this property and what the winning angle is. Everything downstream should be traceable back to it.
+Write directly from Phase A answers. Present for confirmation and save.
 
-Read `references/kh-brands.md` if not already in context. Synthesise from Step 1 and any additional context in the conversation. A strong thesis names the specific Kerten brand, the market gap or opportunity, the segment or location context, and the owner alignment or deal rationale. Do not make a generic claim about Kerten's capabilities — push toward specificity at every iteration.
+**Artifact format:**
+
+    ## Owner Context
+    - **Primary motivation:** [value]
+    - **Red lines / dealbreakers:** [value]
+    - **Existing portfolio:** [value]
+
+---
+
+### Section 3 — Competitive Set & Market Dynamics
+
+Draft from Phase B competitive set research. Include 3–5 competitors with brief positioning notes and any market dynamics relevant to this deal. Flag where data was limited or unavailable.
+
+**Artifact format:**
+
+    ## Competitive Set & Market Dynamics
+    [Drafted content — competitors, positioning notes, market signals]
+
+---
+
+### Section 4 — Asset Assessment
+
+Write directly from Phase A answers. Present for confirmation and save.
+
+**Artifact format:**
+
+    ## Asset Assessment
+    - **Current state:** [value]
+    - **Standout physical features:** [value]
+
+---
+
+### Section 5 — Positioning Thesis
+
+Synthesise from Property Metadata + Owner Context + Competitive Set. A single sentence naming the specific Kerten brand, the market gap, the segment or location context, and the owner alignment.
+
+Read `references/kh-brands.md` and `references/deck-examples/INDEX.md` to inform the proposal. Scan past brand selections in similar market contexts — use them to strengthen or challenge the hypothesis.
+
+A strong thesis names all four elements. If any are missing, add them before presenting.
 
 **Weak:** "Kerten brings lifestyle hospitality expertise to this market."
 **Strong:** "Cloud 7's tech-forward lifestyle positioning fills a gap in Dubai Marina's midscale segment, where the owner's investment-focused priorities align with Kerten's asset-light management model."
-
-If any of the four elements (brand, gap, segment, owner alignment) are missing, point out what is absent and propose a revision that adds it.
 
 **Artifact format:**
 
     ## Positioning Thesis
     [One sentence]
 
-### Step 3 — Concept Direction
+---
+
+### Section 6 — Concept Direction
+
 Read `references/sections/03-concept-direction.md` for field definitions, sub-section guidance, and quality bar.
-Read `references/deck-examples/INDEX.md` if not already in context; identify the 1–2 examples closest to the current brand and market type; load those full files as pattern reference for Vision and Pillars proposals.
 
-### Step 4 — Owner Context
-Read `references/sections/04-owner-context.md` for the three-input flow: relationship intelligence intake, web research, and archetype matching.
-Read `references/kh-owner-archetypes.md` to identify the owner's primary archetype after intake and research are complete.
-Use web search to research the owner or developer — company background, portfolio, track record, and any public statements on investment strategy.
+Derive from Positioning Thesis + brand guidelines. Draft Vision, Pillars, Target Guest, and Differentiators as a complete block and present all four together for review.
 
-### Step 5 — Key Messages
-Read `references/sections/05-key-messages.md` for proposal approach and quality bar.
-Key Messages are derived entirely from the confirmed Owner Context (Step 4) — do not begin this step until Step 4 is saved to the artifact.
+**Artifact format:**
 
-### Step 6 — Experience Inventory
-Read `references/sections/06-experience-inventory.md` for sub-section guidance and quality bar.
-Read `references/kh-fnb-brands.md` to match F&B brands to this property — do not propose F&B concepts without consulting this first.
-Do not begin this step until Step 3 (Concept Direction) is confirmed.
+    ## Concept Direction
+
+    ### Vision
+    [1–2 sentences]
+
+    ### Pillars
+    - **[Pillar Name]** — [one sentence: what it means at this property]
+
+    ### Target Guest
+    [3–5 sentence portrait — psychographic, not demographic]
+
+    ### Differentiators
+    - [Specific, defensible claim tied to a concrete feature or programme]
 
 ---
 
-_Steps 7–15 will be added as subsequent sections are built out._
+### Section 7 — Key Messages / Proof Points
+
+Read `references/sections/05-key-messages.md` for quality bar.
+
+Derive from Owner Context + Positioning Thesis. Each message should directly address a motivation or concern surfaced in the owner's answers. 3–5 messages maximum.
+
+**Artifact format:**
+
+    ## Key Messages
+    - [Message]
+    - [Message]
+
+---
+
+### Section 8 — Experience Inventory
+
+Read `references/sections/06-experience-inventory.md` for sub-section guidance and quality bar.
+Read `references/kh-fnb-brands.md` — do not propose F&B concepts without consulting this first.
+
+Derive from Concept Direction + property scale (keys).
+
+**Artifact format:**
+
+    ## Experience Inventory
+
+    ### Signature Experiences
+    - **[Name]** — [one-line description]
+
+    ### F&B
+    - **[Brand / Concept]** — [one-line description]
+
+    ### Wellness
+    - **[Offering]** — [one-line description]
+
+---
+
+### Section 9 — Financial Anchors
+
+Derive from Competitive Set research. ADR and occupancy data are not available via standard sources — flag these fields explicitly as absent. Do not fabricate values. Note which benchmarks came from research vs. require manual input from Karolina.
+
+**Artifact format:**
+
+    ## Financial Anchors
+    - **Comp set ADR range:** [value or "Not available — manual input required"]
+    - **Comp set occupancy:** [value or "Not available — manual input required"]
+    - **Revenue streams:** [list]
+    - **Market notes:** [summary of available benchmarks]
+
+---
+
+### Section 10 — Commercial Terms
+
+Derive from market context + owner's existing portfolio. Flag assumptions explicitly.
+
+**Artifact format:**
+
+    ## Commercial Terms
+    [Drafted content]
+
+---
+
+### Section 11 — Design Direction
+
+Derive from Concept Direction + brand guidelines. Reference `references/kh-brands.md` for brand-specific design language.
+
+**Artifact format:**
+
+    ## Design Direction
+    [Drafted content]
+
+---
+
+### Section 12 — Phasing _(optional)_
+
+Include only if the deal type or conversation context indicates a phased build or opening. Skip if not applicable.
+
+**Artifact format:**
+
+    ## Phasing
+    [Drafted content]
+
+---
+
+### Section 13 — Partners & Collaborators _(optional)_
+
+Include only if Concept Direction points to specific partnership opportunities. Skip if not applicable.
+
+**Artifact format:**
+
+    ## Partners & Collaborators
+    [Drafted content]
+
+---
+
+### Section 14 — Insider Knowledge & Relationships _(optional)_
+
+If the user answered the open closer in Phase A, record it here. This section cannot be derived — write what was shared, lightly structured.
+
+**Artifact format:**
+
+    ## Insider Knowledge & Relationships
+    [What was shared]
+
+---
+
+### Section 15 — Open Questions for Client _(optional)_
+
+Surface any gaps from the above that require client input before the pipeline can run. Skip if there are none.
+
+**Artifact format:**
+
+    ## Open Questions for Client
+    - [Question]
+
+---
+
+_When all sections are confirmed, remind the user to run `/submit-brief` to validate and submit the Direction Document to the pipeline._

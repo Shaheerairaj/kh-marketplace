@@ -17,34 +17,27 @@ Present the following to the user — keep it tight, no preamble:
 
 **Concept Brief — Session Overview**
 
-We'll work through the Direction Document section by section. For each section I'll propose content, you refine it, and once you're happy I'll save it to a running artifact file (`concept-brief-[property-name].md`) in this directory. You can stop at any time and resume later — just run `/start-concept-brief` again and I'll pick up where we left off.
+I'll start by asking you to fill in a short form — 10 fields covering the property, owner, and asset. Once submitted, I'll run market and owner research, then auto-draft all remaining sections for you to review and confirm. Everything gets saved to a running artifact file (`concept-brief-[property-name].md`) in this directory. You can stop at any time and resume later — just run `/start-concept-brief` again and I'll pick up where we left off.
 
 You can view our progress of the information we save on the right pane.
 
-**Sections we'll cover:**
+**What I'll ask you:**
 
 | # | Section | |
 |---|---|---|
 | 1 | Property Metadata | Required |
-| 2 | Positioning Thesis | Required |
-| 3 | Concept Direction | Required |
-| 4 | Owner Context | Required |
-| 5 | Key Messages | Required |
-| 6 | Experience Inventory | Required |
-| 7 | Competitive Set & Market Dynamics | Required |
-| 8 | Asset Assessment | Required |
-| 9 | Financial Anchors | Required |
-| 10 | Commercial Terms | Required |
-| 11 | Design Direction | Required |
-| 12 | Phasing | Optional |
-| 13 | Partners & Collaborators | Optional |
-| 14 | Insider Knowledge & Relationships | Optional |
-| 15 | Open Questions for Client | Optional |
+| 2 | Owner Context | Required |
+| 3 | Asset Assessment | Required |
+| 4 | Insider Knowledge & Relationships | Optional |
 
-Optional sections are included if the information is available — skip them if not.
+All remaining sections — Competitive Set & Market Dynamics, Positioning Thesis, Concept Direction, Key Messages, Experience Inventory, Financial Anchors, Commercial Terms, Design Direction, Phasing, Partners & Collaborators, and Open Questions — are auto-drafted from your answers and research, then presented to you for review.
 
 ---
 
-## 3. Begin
+## 3. Display the intake form
 
-Ask: **"What's the property name or working title?"** — then begin Step 1 (Property Metadata) from the concept-briefing skill.
+Present all seed sections as a single interactive form. Present the entire form at once — do not ask questions one at a time.
+
+If the user uploaded an RFP or brief document: pre-populate every field you can answer confidently from it, leaving blanks only where the document is silent. Mark pre-populated fields clearly so the user knows what was extracted.
+
+Once submitted, hand off to the concept-briefing skill to run research and auto-draft all sections.
