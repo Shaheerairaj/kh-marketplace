@@ -36,7 +36,7 @@ All remaining sections — Competitive Set & Market Dynamics, Positioning Thesis
 
 ## 3. Display the intake form
 
-Present all seed sections as a single interactive form. Present the entire form at once — do not ask questions one at a time.
+Render the form defined in `skills/concept-briefing/assets/intake-form.html`. Present it as a single block — do not ask questions one at a time.
 
 If the user uploaded an RFP or brief document: pre-populate every field you can answer confidently from it, leaving blanks only where the document is silent. Mark pre-populated fields clearly so the user knows what was extracted.
 

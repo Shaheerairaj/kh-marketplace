@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Concept Brief — Intake Form</title>
+</head>
+<body>
+
+<h2>Concept Brief — Intake Form</h2>
+<p>Fill in what you know. Fields marked * are required.</p>
+
+<form id="intake-form">
+
+  <fieldset>
+    <legend>Property Metadata</legend>
+
+    <label for="property-name">Property name *</label><br>
+    <input type="text" id="property-name" name="property_name" required placeholder="e.g. Dubai Marina Residences"><br><br>
+
+    <label for="location">Location (city, country) *</label><br>
+    <input type="text" id="location" name="location" required placeholder="e.g. Dubai, UAE"><br><br>
+
+    <label for="keys">Number of keys *</label><br>
+    <input type="number" id="keys" name="keys" required min="1" placeholder="e.g. 120"><br><br>
+
+    <label for="brand">Proposed brand *</label><br>
+    <select id="brand" name="brand" required>
+      <option value="">— select —</option>
+      <option value="Cloud 7">Cloud 7</option>
+      <option value="The House Hotel">The House Hotel</option>
+      <option value="Hosme">Hosme</option>
+      <option value="TBD">TBD / Not sure yet</option>
+    </select><br><br>
+
+    <label for="deal-type">Deal type *</label><br>
+    <select id="deal-type" name="deal_type" required>
+      <option value="">— select —</option>
+      <option value="Management contract">Management contract</option>
+      <option value="Franchise">Franchise</option>
+      <option value="Lease">Lease</option>
+      <option value="JV">Joint venture</option>
+      <option value="Other">Other</option>
+    </select>
+  </fieldset>
+
+  <fieldset>
+    <legend>Owner Context</legend>
+
+    <label for="motivation">Primary motivation *</label><br>
+    <textarea id="motivation" name="motivation" required rows="2" cols="50" placeholder="e.g. long-term yield, trophy asset, brand association"></textarea><br><br>
+
+    <label for="red-lines">Red lines / dealbreakers</label><br>
+    <textarea id="red-lines" name="red_lines" rows="2" cols="50" placeholder="e.g. no F&B risk, must retain naming rights"></textarea><br><br>
+
+    <label for="portfolio">Existing portfolio</label><br>
+    <input type="text" id="portfolio" name="portfolio" placeholder="e.g. 3 hotels in KSA, 2 residential projects in UAE">
+  </fieldset>
+
+  <fieldset>
+    <legend>Asset Assessment</legend>
+
+    <label for="current-state">Current state *</label><br>
+    <select id="current-state" name="current_state" required>
+      <option value="">— select —</option>
+      <option value="Greenfield">Greenfield (land only)</option>
+      <option value="Under construction">Under construction</option>
+      <option value="Shell complete">Shell complete</option>
+      <option value="Existing — full renovation">Existing — full renovation</option>
+      <option value="Existing — soft refurbishment">Existing — soft refurbishment</option>
+      <option value="Existing — operational">Existing — operational</option>
+    </select><br><br>
+
+    <label for="features">Standout physical features</label><br>
+    <textarea id="features" name="features" rows="2" cols="50" placeholder="e.g. rooftop pool, heritage facade, direct beach access"></textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>Insider Knowledge &amp; Relationships <small>(optional)</small></legend>
+
+    <label for="insider">Anything useful that won't show up in research</label><br>
+    <textarea id="insider" name="insider" rows="3" cols="50" placeholder="e.g. owner has a prior relationship with a competitor brand, site has a noise issue, decision is being driven by a silent partner"></textarea>
+  </fieldset>
+
+  <br>
+  <button type="submit">Submit</button>
+
+</form>
+
+</body>
+</html>
