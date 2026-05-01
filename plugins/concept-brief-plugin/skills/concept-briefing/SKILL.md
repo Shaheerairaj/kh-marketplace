@@ -55,16 +55,13 @@ Synthesise findings internally — they feed Phase C drafts directly.
 
 ## Phase C — Auto-draft and Validate
 
-Draft all derived sections in schema order. For each section:
-1. Present the draft
-2. Ask: *"Happy with this, or any changes?"*
-3. On confirmation, write to artifact and advance
+Draft all sections in schema order without pausing. Write each section to the artifact as it is completed. Once all sections are drafted and saved, present a single summary of everything written and ask: *"Anything you'd like to change?"*
 
 ---
 
 ### Section 1 — Property Metadata
 
-Write directly from Phase A answers — no drafting needed. Present for confirmation and save.
+Write directly from Phase A answers — no drafting needed. Save to artifact.
 
 **Artifact format:**
 
@@ -79,7 +76,7 @@ Write directly from Phase A answers — no drafting needed. Present for confirma
 
 ### Section 2 — Owner Context
 
-Write directly from Phase A answers. Present for confirmation and save.
+Write directly from Phase A answers. Save to artifact.
 
 **Artifact format:**
 
@@ -103,7 +100,7 @@ Draft from Phase B competitive set research. Include 3–5 competitors with brie
 
 ### Section 4 — Asset Assessment
 
-Write directly from Phase A answers. Present for confirmation and save.
+Write directly from Phase A answers. Save to artifact.
 
 **Artifact format:**
 
