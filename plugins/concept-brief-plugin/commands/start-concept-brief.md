@@ -36,7 +36,27 @@ All remaining sections — Competitive Set & Market Dynamics, Positioning Thesis
 
 ## 3. Display the intake form
 
-Render the form defined in `skills/concept-briefing/assets/intake-form.html` exactly how it is inline, just take the form directly and render it without adjusting styling or anything. Present it as a single block — do not ask questions one at a time. Make sure the form is tight and concise. Each question should not be in a new line as that will make the form too tall so be sure to make efficient use of space.
+Present all fields as a single compact form. Group short fields on the same line — do not stack every field vertically.
+
+**Property** _(one row)_
+- Property name * — free text
+- Location * — free text
+- Keys * — number
+
+**Brand** * — button selection: `Cloud 7` · `The House Hotel` · `Hosme` · `TBD`
+
+**Deal type** * — button selection: `Management contract` · `Franchise` · `Lease` · `JV` · `Other`
+
+**Owner** _(side by side)_
+- Primary motivation * — free text
+- Red lines / dealbreakers — free text
+- Existing portfolio — free text
+
+**Asset**
+- Current state * — button selection: `Greenfield` · `Under construction` · `Shell complete` · `Full renovation` · `Soft refurbishment` · `Operational`
+- Standout physical features — free text
+
+**Insider Knowledge & Relationships** _(optional)_ — free text
 
 If the user uploaded an RFP or brief document: pre-populate every field you can answer confidently from it, leaving blanks only where the document is silent. Mark pre-populated fields clearly so the user knows what was extracted.
 
