@@ -3,88 +3,144 @@
 <head>
   <meta charset="UTF-8">
   <title>Concept Brief — Intake Form</title>
+  <style>
+    body { font-family: system-ui, sans-serif; font-size: 13px; color: #1a1a1a; background: #fff; margin: 24px; }
+    h2 { font-size: 16px; margin: 0 0 4px; }
+    p.hint { color: #666; margin: 0 0 16px; }
+
+    fieldset { border: 1px solid #ddd; border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; }
+    legend { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: #555; padding: 0 4px; }
+
+    .row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+    .row:last-child { margin-bottom: 0; }
+    .field { display: flex; flex-direction: column; gap: 3px; }
+    .field.grow { flex: 1; }
+
+    label { font-size: 11px; color: #666; }
+    input[type="text"], input[type="number"], textarea {
+      border: 1px solid #ccc; border-radius: 4px; padding: 5px 8px;
+      font-size: 13px; font-family: inherit; color: #1a1a1a;
+      outline: none; width: 100%; box-sizing: border-box;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, textarea:focus { border-color: #555; }
+    textarea { resize: vertical; }
+
+    .btn-group { display: flex; flex-wrap: wrap; gap: 5px; }
+    .btn-group input[type="radio"] { display: none; }
+    .btn-group label {
+      font-size: 12px; color: #333; cursor: pointer;
+      border: 1px solid #ccc; border-radius: 4px;
+      padding: 4px 10px; white-space: nowrap;
+      background: #fafafa; user-select: none;
+    }
+    .btn-group input[type="radio"]:checked + label {
+      background: #1a1a1a; color: #fff; border-color: #1a1a1a;
+    }
+
+    button[type="submit"] {
+      background: #1a1a1a; color: #fff; border: none; border-radius: 5px;
+      padding: 8px 20px; font-size: 13px; cursor: pointer;
+    }
+    button[type="submit"]:hover { background: #333; }
+
+    input[type="number"] { width: 80px; }
+  </style>
 </head>
 <body>
 
 <h2>Concept Brief — Intake Form</h2>
-<p>Fields marked * are required.</p>
+<p class="hint">Fields marked * are required.</p>
 
 <form id="intake-form">
 
   <fieldset>
-    <legend>Property Metadata</legend>
-    <table>
-      <tr>
-        <td><label for="property-name">Property name *</label><br>
-            <input type="text" id="property-name" name="property_name" required size="28" placeholder="e.g. Dubai Marina Residences"></td>
-        <td><label for="location">Location *</label><br>
-            <input type="text" id="location" name="location" required size="22" placeholder="City, Country"></td>
-        <td><label for="keys">Keys *</label><br>
-            <input type="number" id="keys" name="keys" required min="1" size="6" placeholder="120"></td>
-      </tr>
-      <tr>
-        <td><label for="brand">Brand *</label><br>
-            <select id="brand" name="brand" required>
-              <option value="">— select —</option>
-              <option value="Cloud 7">Cloud 7</option>
-              <option value="The House Hotel">The House Hotel</option>
-              <option value="Hosme">Hosme</option>
-              <option value="TBD">TBD / Not sure yet</option>
-            </select></td>
-        <td colspan="2"><label for="deal-type">Deal type *</label><br>
-            <select id="deal-type" name="deal_type" required>
-              <option value="">— select —</option>
-              <option value="Management contract">Management contract</option>
-              <option value="Franchise">Franchise</option>
-              <option value="Lease">Lease</option>
-              <option value="JV">Joint venture</option>
-              <option value="Other">Other</option>
-            </select></td>
-      </tr>
-    </table>
+    <legend>Property</legend>
+    <div class="row">
+      <div class="field grow">
+        <label for="property-name">Property name *</label>
+        <input type="text" id="property-name" name="property_name" required placeholder="e.g. Dubai Marina Residences">
+      </div>
+      <div class="field grow">
+        <label for="location">Location *</label>
+        <input type="text" id="location" name="location" required placeholder="City, Country">
+      </div>
+      <div class="field">
+        <label for="keys">Keys *</label>
+        <input type="number" id="keys" name="keys" required min="1" placeholder="120">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Brand *</label>
+        <div class="btn-group">
+          <input type="radio" id="brand-c7" name="brand" value="Cloud 7" required><label for="brand-c7">Cloud 7</label>
+          <input type="radio" id="brand-thh" name="brand" value="The House Hotel"><label for="brand-thh">The House Hotel</label>
+          <input type="radio" id="brand-hosme" name="brand" value="Hosme"><label for="brand-hosme">Hosme</label>
+          <input type="radio" id="brand-tbd" name="brand" value="TBD"><label for="brand-tbd">TBD</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Deal type *</label>
+        <div class="btn-group">
+          <input type="radio" id="deal-mc" name="deal_type" value="Management contract" required><label for="deal-mc">Management contract</label>
+          <input type="radio" id="deal-fr" name="deal_type" value="Franchise"><label for="deal-fr">Franchise</label>
+          <input type="radio" id="deal-le" name="deal_type" value="Lease"><label for="deal-le">Lease</label>
+          <input type="radio" id="deal-jv" name="deal_type" value="JV"><label for="deal-jv">JV</label>
+          <input type="radio" id="deal-ot" name="deal_type" value="Other"><label for="deal-ot">Other</label>
+        </div>
+      </div>
+    </div>
   </fieldset>
 
   <fieldset>
-    <legend>Owner Context</legend>
-    <table>
-      <tr>
-        <td><label for="motivation">Primary motivation *</label><br>
-            <textarea id="motivation" name="motivation" required rows="2" cols="30" placeholder="e.g. long-term yield, trophy asset"></textarea></td>
-        <td><label for="red-lines">Red lines / dealbreakers</label><br>
-            <textarea id="red-lines" name="red_lines" rows="2" cols="30" placeholder="e.g. no F&B risk, must retain naming rights"></textarea></td>
-        <td><label for="portfolio">Existing portfolio</label><br>
-            <textarea id="portfolio" name="portfolio" rows="2" cols="24" placeholder="e.g. 3 hotels in KSA"></textarea></td>
-      </tr>
-    </table>
+    <legend>Owner</legend>
+    <div class="row">
+      <div class="field grow">
+        <label for="motivation">Primary motivation *</label>
+        <textarea id="motivation" name="motivation" required rows="2" placeholder="e.g. long-term yield, trophy asset, brand association"></textarea>
+      </div>
+      <div class="field grow">
+        <label for="red-lines">Red lines / dealbreakers</label>
+        <textarea id="red-lines" name="red_lines" rows="2" placeholder="e.g. no F&B risk, must retain naming rights"></textarea>
+      </div>
+      <div class="field grow">
+        <label for="portfolio">Existing portfolio</label>
+        <textarea id="portfolio" name="portfolio" rows="2" placeholder="e.g. 3 hotels in KSA, 2 residential projects"></textarea>
+      </div>
+    </div>
   </fieldset>
 
   <fieldset>
-    <legend>Asset Assessment</legend>
-    <table>
-      <tr>
-        <td><label for="current-state">Current state *</label><br>
-            <select id="current-state" name="current_state" required>
-              <option value="">— select —</option>
-              <option value="Greenfield">Greenfield (land only)</option>
-              <option value="Under construction">Under construction</option>
-              <option value="Shell complete">Shell complete</option>
-              <option value="Existing — full renovation">Existing — full renovation</option>
-              <option value="Existing — soft refurbishment">Existing — soft refurbishment</option>
-              <option value="Existing — operational">Existing — operational</option>
-            </select></td>
-        <td><label for="features">Standout physical features</label><br>
-            <textarea id="features" name="features" rows="2" cols="40" placeholder="e.g. rooftop pool, heritage facade, direct beach access"></textarea></td>
-      </tr>
-    </table>
+    <legend>Asset</legend>
+    <div class="row">
+      <div class="field">
+        <label>Current state *</label>
+        <div class="btn-group">
+          <input type="radio" id="state-gf" name="current_state" value="Greenfield" required><label for="state-gf">Greenfield</label>
+          <input type="radio" id="state-uc" name="current_state" value="Under construction"><label for="state-uc">Under construction</label>
+          <input type="radio" id="state-sc" name="current_state" value="Shell complete"><label for="state-sc">Shell complete</label>
+          <input type="radio" id="state-fr" name="current_state" value="Full renovation"><label for="state-fr">Full renovation</label>
+          <input type="radio" id="state-sr" name="current_state" value="Soft refurbishment"><label for="state-sr">Soft refurbishment</label>
+          <input type="radio" id="state-op" name="current_state" value="Operational"><label for="state-op">Operational</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field grow">
+        <label for="features">Standout physical features</label>
+        <textarea id="features" name="features" rows="2" placeholder="e.g. rooftop pool, heritage facade, direct beach access"></textarea>
+      </div>
+    </div>
   </fieldset>
 
   <fieldset>
-    <legend>Insider Knowledge &amp; Relationships <small>(optional)</small></legend>
-    <label for="insider">Anything useful that won't show up in research</label><br>
-    <textarea id="insider" name="insider" rows="2" cols="90" placeholder="e.g. owner has a prior relationship with a competitor brand, site has a noise issue, decision driven by a silent partner"></textarea>
+    <legend>Insider Knowledge &amp; Relationships <small style="font-weight:normal;text-transform:none;">(optional)</small></legend>
+    <div class="field">
+      <label for="insider">Anything useful that won't show up in research</label>
+      <textarea id="insider" name="insider" rows="2" placeholder="e.g. owner has a prior relationship with a competitor brand, site has a noise issue, decision driven by a silent partner"></textarea>
+    </div>
   </fieldset>
 
-  <br>
   <button type="submit">Submit</button>
 
 </form>
