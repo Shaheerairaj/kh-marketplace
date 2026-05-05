@@ -36,7 +36,9 @@ All remaining sections — Competitive Set & Market Dynamics, Positioning Thesis
 
 ## 3. Display the intake form
 
-Present all fields as a single compact form. Group short fields on the same line — do not stack every field vertically.
+Generate and display as inline HTML/CSS. Visual style — flat card, white background (#ffffff), 1px solid border (#e2e8f0), border-radius 8px, 16px horizontal padding, 12px vertical padding, max-width 560px, system sans-serif font. Section headers: 11px uppercase, letter-spacing 0.05em, color #94a3b8. Field labels: 12px, color #64748b. Input text: 13px, color #1e293b, font-weight 500. Input fields: 1px solid #e2e8f0, border-radius 6px, padding 8px 10px. Toggle buttons: 1px solid #e2e8f0, border-radius 6px, padding 6px 12px, 13px; selected state: background #1e293b, color #ffffff, border-color #1e293b. Row gap: 12px between fields. Group dividers: 1px solid #f1f5f9, 8px margin above and below. Submit button: full width, background #1e293b, color #ffffff, border-radius 6px, padding 10px, 13px, font-weight 500.
+
+Group short fields on the same line — do not stack every field vertically.
 
 **Property** _(one row)_
 - Property name * — free text

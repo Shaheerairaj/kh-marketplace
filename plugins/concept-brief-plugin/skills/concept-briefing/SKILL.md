@@ -1,6 +1,6 @@
 ---
 name: concept-briefing
-description: Guides a Direction Document session for a Kerten Hospitality hotel management proposal. Activates when a user begins discussing a new property, deal, or concept brief. Presents an interactive intake form, runs market and owner research, then auto-drafts all derived sections for validation.
+description: Guides a Direction Document session for a Kerten Hospitality hotel management proposal. Activates when a user begins discussing a new property, deal, or concept brief. Presents an interactive intake form, runs market and owner research, then auto-drafts all derived sections for review.
 ---
 
 ## Purpose
@@ -24,7 +24,7 @@ Example: "Dubai Marina Residences" → `concept-brief-dubai-marina-residences.md
 
 **Location:** current working directory
 
-**Write sections in schema order** (as listed in Phase C). After the user confirms each section, append it to the artifact. Never overwrite or modify already-confirmed sections.
+**Write sections in schema order.** After completing each section, append it to the artifact. Never overwrite or modify already-confirmed sections.
 
 After each write: confirm to the user which section was saved and advance to the next.
 
@@ -34,13 +34,34 @@ After each write: confirm to the user which section was saved and advance to the
 
 Display the intake form as defined in `/start-concept-brief`. Do not ask questions one at a time.
 
-Once the user submits: acknowledge the answers, note any required fields left blank (name, location, deal type), and move immediately to Phase B.
+Once the user submits: acknowledge the answers, note any required fields left blank (name, location, deal type), and move immediately to Phase B1.
 
 If required fields are blank, ask only for those — do not re-show the full form.
 
+Once all required fields are confirmed, generate and display a summary card as inline HTML/CSS before proceeding to Phase B1. Do not wait for user input after displaying the card — move immediately to Phase B1.
+
+Visual style — flat card, white background (#ffffff), 1px solid border (#e2e8f0), border-radius 8px, 16px horizontal padding, 12px vertical padding, max-width 560px, system sans-serif font. Section headers: 11px uppercase, letter-spacing 0.05em, color #94a3b8. Field labels: 12px, color #64748b. Values: 13px, color #1e293b, font-weight 500. Row gap: 12px between fields. Group dividers: 1px solid #f1f5f9, 8px margin above and below. For any blank optional field, show an em-dash in muted italic (color #94a3b8).
+
+Card title: `WHAT WAS CAPTURED`
+
+**Group 1 — Property**
+- Property: [name] · [location] · [keys] keys
+- Brand: [brand]
+- Deal type: [deal type]
+
+**Group 2 — Owner**
+- Motivation: [primary motivation]
+- Red lines: [value or —]
+- Portfolio: [value or —]
+
+**Group 3 — Asset**
+- State: [current state]
+- Features: [standout features or —]
+- Insider knowledge: [value or —]
+
 ---
 
-## Phase B — Research
+## Phase B1 — Research
 
 Tell the user: *"Got it. Running market and owner research — give me a moment."*
 
@@ -49,13 +70,13 @@ Run the following in parallel without surfacing raw results to the user:
 - **Competitive set** — web search for comparable hotels in the same city/district and positioning tier. Identify 3–5 direct competitors: brand, positioning, key features, any known performance signals.
 - **Owner background** — web search for the owner or developer: company background, portfolio, track record, any public statements on investment strategy or brand preferences.
 
-Synthesise findings internally — they feed Phase C drafts directly.
+Summarise findings into a compact internal record — 3–5 bullet points per search. These summaries feed Phase C drafting and the Checkpoint 1 handoff. Do not carry raw search results forward.
 
 ---
 
-## Phase C — Auto-draft and Validate
+## Phase C — Draft Sections 1–5
 
-Draft all sections in schema order without pausing. Write each section to the artifact as it is completed. Once all sections are drafted and saved, present a single summary of everything written and ask: *"Anything you'd like to change?"*
+Draft Sections 1–5 in order. Write each section to the artifact as it is completed.
 
 ---
 
@@ -128,144 +149,39 @@ A strong thesis names all four elements. If any are missing, add them before pre
 
 ---
 
-### Section 6 — Concept Direction
+## Checkpoint 1 — Positioning Review
 
-Read `references/sections/03-concept-direction.md` for field definitions, sub-section guidance, and quality bar.
+Generate and display as inline HTML/CSS. Visual style — flat card, white background (#ffffff), 1px solid border (#e2e8f0), border-radius 8px, 16px horizontal padding, 12px vertical padding, max-width 560px, system sans-serif font. Section headers: 11px uppercase, letter-spacing 0.05em, color #94a3b8. Field labels: 12px, color #64748b. Input text: 13px, color #1e293b, font-weight 500. Input fields: 1px solid #e2e8f0, border-radius 6px, padding 8px 10px. Toggle buttons: 1px solid #e2e8f0, border-radius 6px, padding 6px 12px, 13px; selected state: background #1e293b, color #ffffff, border-color #1e293b. Row gap: 12px between fields. Group dividers: 1px solid #f1f5f9, 8px margin above and below. Submit button: full width, background #1e293b, color #ffffff, border-radius 6px, padding 10px, 13px, font-weight 500.
 
-Derive from Positioning Thesis + brand guidelines. Draft Vision, Pillars, Target Guest, and Differentiators as a complete block and present all four together for review.
-
-**Artifact format:**
-
-    ## Concept Direction
-
-    ### Vision
-    [1–2 sentences]
-
-    ### Pillars
-    - **[Pillar Name]** — [one sentence: what it means at this property]
-
-    ### Target Guest
-    [3–5 sentence portrait — psychographic, not demographic]
-
-    ### Differentiators
-    - [Specific, defensible claim tied to a concrete feature or programme]
+Do not present this as a chat message or bullet list. Pre-populate all fields from the drafted content above; label each as derived so the user knows what came from research.
 
 ---
 
-### Section 7 — Key Messages / Proof Points
+**Positioning Thesis** _(full width)_
+- Pre-populated with the Section 5 draft — textarea, editable
 
-Read `references/sections/05-key-messages.md` for quality bar.
+**Brand** — button selection (pre-selected from intake): `Cloud 7` · `The House Hotel` · `Hosme` · `TBD`
 
-Derive from Owner Context + Positioning Thesis. Each message should directly address a motivation or concern surfaced in the owner's answers. 3–5 messages maximum.
+**Target Segment** _(full width)_
+- One-line segment hypothesis derived from Positioning Thesis and Owner Context — free text, editable
+- Example: *"Upper-midscale extended-stay business traveller, Dubai Marina corridor"*
 
-**Artifact format:**
-
-    ## Key Messages
-    - [Message]
-    - [Message]
-
----
-
-### Section 8 — Experience Inventory
-
-Read `references/sections/06-experience-inventory.md` for sub-section guidance and quality bar.
-Read `references/kh-fnb-brands.md` — do not propose F&B concepts without consulting this first.
-
-Derive from Concept Direction + property scale (keys).
-
-**Artifact format:**
-
-    ## Experience Inventory
-
-    ### Signature Experiences
-    - **[Name]** — [one-line description]
-
-    ### F&B
-    - **[Brand / Concept]** — [one-line description]
-
-    ### Wellness
-    - **[Offering]** — [one-line description]
+Submit button: "Confirm & Generate Brief"
 
 ---
 
-### Section 9 — Financial Anchors
-
-Derive from Competitive Set research. ADR and occupancy data are not available via standard sources — flag these fields explicitly as absent. Do not fabricate values. Note which benchmarks came from research vs. require manual input from Karolina.
-
-**Artifact format:**
-
-    ## Financial Anchors
-    - **Comp set ADR range:** [value or "Not available — manual input required"]
-    - **Comp set occupancy:** [value or "Not available — manual input required"]
-    - **Revenue streams:** [list]
-    - **Market notes:** [summary of available benchmarks]
+Once the user submits, acknowledge the confirmed values in one sentence, then proceed to the Agent Handoff.
 
 ---
 
-### Section 10 — Commercial Terms
+## Agent Handoff
 
-Derive from market context + owner's existing portfolio. Flag assumptions explicitly.
+Invoke the `generate-brief` agent. Pass the following as context:
 
-**Artifact format:**
+- **Confirmed Positioning Thesis** — from Checkpoint 1
+- **Confirmed Brand** — from Checkpoint 1
+- **Confirmed Target Segment** — from Checkpoint 1
+- **Seed data** — all Phase A answers (property metadata, owner context, asset assessment, insider knowledge)
+- **B1 research summaries** — comp set findings and owner background from Phase B1
 
-    ## Commercial Terms
-    [Drafted content]
-
----
-
-### Section 11 — Design Direction
-
-Derive from Concept Direction + brand guidelines. Reference `references/kh-brands.md` for brand-specific design language.
-
-**Artifact format:**
-
-    ## Design Direction
-    [Drafted content]
-
----
-
-### Section 12 — Phasing _(optional)_
-
-Include only if the deal type or conversation context indicates a phased build or opening. Skip if not applicable.
-
-**Artifact format:**
-
-    ## Phasing
-    [Drafted content]
-
----
-
-### Section 13 — Partners & Collaborators _(optional)_
-
-Include only if Concept Direction points to specific partnership opportunities. Skip if not applicable.
-
-**Artifact format:**
-
-    ## Partners & Collaborators
-    [Drafted content]
-
----
-
-### Section 14 — Insider Knowledge & Relationships _(optional)_
-
-If the user answered the open closer in Phase A, record it here. This section cannot be derived — write what was shared, lightly structured.
-
-**Artifact format:**
-
-    ## Insider Knowledge & Relationships
-    [What was shared]
-
----
-
-### Section 15 — Open Questions for Client _(optional)_
-
-Surface any gaps from the above that require client input before the pipeline can run. Skip if there are none.
-
-**Artifact format:**
-
-    ## Open Questions for Client
-    - [Question]
-
----
-
-_When all sections are confirmed, remind the user to run `/submit-brief` to validate and submit the Direction Document to the pipeline._
+The agent will draft and save Sections 6–15 directly to the artifact file, then surface a research summary and the full concept brief to the user for review. Do not begin drafting any of those sections yourself. Keep the conversation open — the user may want to refine sections before they are ready to submit. The `/submit-brief` command is the user's action to take when satisfied; do not prompt them to run it.
