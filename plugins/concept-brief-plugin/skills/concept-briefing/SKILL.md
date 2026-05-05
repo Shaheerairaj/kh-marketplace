@@ -93,7 +93,7 @@ Card title: `WHAT WAS CAPTURED`
 
 ## Phase B — Research
 
-Tell the user: *"Got it. Running market and owner research — give me a moment."*
+Tell the user: *"Super complicated deep research being conducted for the remaining sections — this may take a moment. Grab a coffee while you wait."*
 
 Invoke two instances of the `research` agent in parallel. Do not proceed until both return.
 
