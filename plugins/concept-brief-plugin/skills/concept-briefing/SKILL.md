@@ -70,7 +70,7 @@ If required fields are blank, ask only for those — do not re-show the full for
 
 Once all required fields are confirmed, display the "What Was Captured" card before proceeding to Phase B. Do not wait for user input — move immediately to Phase B.
 
-Read `references/ui-style.md` for visual style. Generate and display as inline HTML/CSS. This is a display-only card — apply card shell, typography, layout, and empty-field guidelines.
+Display as an inline HTML card. Show blank optional fields as an em-dash.
 
 Card title: `WHAT WAS CAPTURED`
 
@@ -216,9 +216,7 @@ A strong thesis names all four elements. If any are missing, add them before pre
 
 ## Checkpoint 1 — Positioning Review
 
-Read `references/ui-style.md` for visual style. Generate and display as inline HTML/CSS. This is an interactive form — apply card shell, typography, layout, and interactive element guidelines.
-
-Do not present this as a chat message or bullet list. Pre-populate all fields from the drafted content above; label each as derived so the user knows what came from research.
+Display as an inline HTML form. Do not present this as a chat message or bullet list. Pre-populate all fields from the drafted content above; label each as derived so the user knows what came from research.
 
 ---
 
@@ -453,7 +451,7 @@ Surface any gaps from the above sections that require client input before the pi
 
 When all applicable sections are written to the artifact, display the Decisions Made card.
 
-Read `references/ui-style.md` for visual style. Generate and display as inline HTML/CSS. This is a display-only card — apply card shell, typography, layout, and flagged-value guidelines.
+Display as an inline HTML card. Mark flagged or unavailable values.
 
 Card title: `DECISIONS MADE`
 
@@ -469,7 +467,7 @@ One row per section — label on the left, concise one-line decision on the righ
 - Commercial: [key structure, 4–6 words]
 - Design: [design language, 4–6 words]
 
-Footer — below a 1px divider, in muted 12px text:
+Footer — separated from the rows above by a divider:
 `Full brief: [concept-brief-name].md — open in right-hand pane`
 
 After the card, proceed immediately to the Final Brief.
@@ -478,11 +476,27 @@ After the card, proceed immediately to the Final Brief.
 
 ## Final Brief — HTML Artifact
 
-Read `references/ui-style.md` for document layout guidelines. Generate a self-contained HTML file using the Document Layout section — not the card or form style.
+Generate a self-contained HTML file with all CSS embedded in a `<style>` block. No external dependencies.
 
 **File name:** `concept-brief-[property-name].html` — same slug as the markdown artifact.
 
-The document contains all confirmed sections in schema order, from Property Metadata through to whichever optional sections were included. Render each section using the section block pattern from ui-style.md. Use the markdown artifact as the source of truth for confirmed content.
+Use the markdown artifact as the source of truth. Render all confirmed sections in schema order, from Property Metadata through to whichever optional sections were included.
+
+**Header block:**
+- Property name
+- Metadata row: brand · deal type · location · date generated
+- Divider separating the header from the sections below
+
+**Section blocks:** one block per Direction Document section, in schema order:
+- Section heading — acts as a label
+- Section content below the heading
+- Divider between sections
+
+**Content formatting:**
+- Field names as bold labels
+- Lists where the section content is a list
+- Sub-headings for sections that have sub-sections (e.g. Vision, Pillars, Target Guest)
+- Flagged or unavailable values marked as italic
 
 Write the file to the working directory. Once written, tell the user:
 *"Your full concept brief is saved as `[filename].html` — open it to review the complete document. Let me know if you'd like to change anything. When you're ready, run `/submit-brief` to send it to the pipeline."*

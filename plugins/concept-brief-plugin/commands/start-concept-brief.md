@@ -1,6 +1,15 @@
 Start a Concept Brief session for Kerten Hospitality. Follow these steps exactly.
 
-## 1. Display the session overview
+## 1. Check for an existing brief
+
+Look in the current working directory for any file matching `concept-brief-*.md`.
+
+- If one or more files are found: list them and ask the user "Would you like to resume one of these, or start a new brief?"
+  - If resuming: read the file, identify the last confirmed section, tell the user where you are picking up from, and begin from the next section. Skip steps 2 and 3 below.
+  - If starting new: proceed to step 2.
+- If no file is found: proceed to step 2.
+
+## 2. Display the session overview
 
 Present the following to the user — keep it tight, no preamble:
 
@@ -25,20 +34,18 @@ All remaining sections — Competitive Set & Market Dynamics, Positioning Thesis
 
 ---
 
-## 2. Display the intake form
+## 3. Display the intake form
 
-Read `references/ui-style.md` for visual style. Generate and display as inline HTML/CSS. Apply card shell, typography, layout, and interactive element guidelines.
-
-Group short fields on the same line — do not stack every field vertically.
+Display the intake form as inline HTML. Group short fields on the same row where noted — do not stack every field vertically. Required fields marked with *.
 
 **Property** _(one row)_
 - Property name * — free text
 - Location * — free text
 - Keys * — number
 
-**Brand** * — button selection: `Cloud 7` · `The House Hotel` · `Hosme` · `TBD`
+**Brand** * — button toggle group: `Cloud 7` · `The House Hotel` · `Hosme` · `TBD`
 
-**Deal type** * — button selection: `Management contract` · `Franchise` · `Lease` · `JV` · `Other`
+**Deal type** * — button toggle group: `Management contract` · `Franchise` · `Lease` · `JV` · `Other`
 
 **Owner** _(side by side)_
 - Primary motivation * — free text
@@ -46,7 +53,7 @@ Group short fields on the same line — do not stack every field vertically.
 - Existing portfolio — free text
 
 **Asset**
-- Current state * — button selection: `Greenfield` · `Under construction` · `Shell complete` · `Full renovation` · `Soft refurbishment` · `Operational`
+- Current state * — button toggle group: `Greenfield` · `Under construction` · `Shell complete` · `Full renovation` · `Soft refurbishment` · `Operational`
 - Standout physical features — free text
 
 **Insider Knowledge & Relationships** _(optional)_ — free text
