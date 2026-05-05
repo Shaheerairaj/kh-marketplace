@@ -3,7 +3,7 @@ name: research
 description: Generic research agent invoked with a specific research brief. Conducts thorough web research and returns a concise structured summary with source references. Invoked in parallel for independent research tasks within a concept briefing session.
 model: sonnet
 effort: high
-maxTurns: 20
+maxTurns: 2
 disallowedTools: Bash
 ---
 
