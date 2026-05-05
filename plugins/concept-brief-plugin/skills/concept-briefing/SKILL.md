@@ -7,6 +7,36 @@ description: Guides a Direction Document session for a Kerten Hospitality hotel 
 
 Drive a structured Direction Document session for a Kerten Hospitality hotel management proposal. Collect seed information through a single interactive form, run research, then auto-draft all derived sections for the user to review and confirm. The artifact is the single record of everything decided — downstream pipeline agents are driven from it with no further human input.
 
+## Progress Tracking
+
+Copy this checklist and check off items as you complete them:
+
+```
+Session Progress:
+- [ ] Phase A — Intake form submitted
+  - [ ] "What Was Captured" card displayed
+- [ ] Phase B — Market and owner research complete
+- [ ] Phase C — Sections 1–5 drafted and saved
+- [ ] Checkpoint 1 — Positioning review card displayed
+  - [ ] Positioning confirmed by user
+- [ ] Phase D — Deep research complete
+- [ ] Phase E — Draft Sections 6–15
+  - [ ] Section 6 — Concept Direction
+  - [ ] Section 7 — Key Messages
+  - [ ] Section 8 — Experience Inventory
+  - [ ] Section 9 — Financial Anchors
+  - [ ] Section 10 — Commercial Terms
+  - [ ] Section 11 — Design Direction
+  - [ ] Section 12 — Phasing _(skip if not applicable)_
+  - [ ] Section 13 — Partners & Collaborators _(skip if not applicable)_
+  - [ ] Section 14 — Insider Knowledge _(skip if not applicable)_
+  - [ ] Section 15 — Open Questions _(skip if not applicable)_
+- [ ] Decisions Made card displayed
+- [ ] HTML brief generated
+```
+
+---
+
 ## Session Start
 
 Before beginning, check for two things:
@@ -34,13 +64,13 @@ After each write: confirm to the user which section was saved and advance to the
 
 Display the intake form as defined in `/start-concept-brief`. Do not ask questions one at a time.
 
-Once the user submits: acknowledge the answers, note any required fields left blank (name, location, keys, brand, deal type, primary motivation, current state), and move immediately to Phase B1.
+Once the user submits: acknowledge the answers, note any required fields left blank (name, location, keys, brand, deal type, primary motivation, current state), and move immediately to Phase B.
 
 If required fields are blank, ask only for those — do not re-show the full form.
 
-Once all required fields are confirmed, generate and display a summary card as inline HTML/CSS before proceeding to Phase B1. Do not wait for user input after displaying the card — move immediately to Phase B1.
+Once all required fields are confirmed, display the "What Was Captured" card before proceeding to Phase B. Do not wait for user input — move immediately to Phase B.
 
-Read `references/ui-style.md` for visual style. This is a display-only card — apply card shell, typography, layout, and empty-field guidelines.
+Read `references/ui-style.md` for visual style. Generate and display as inline HTML/CSS. This is a display-only card — apply card shell, typography, layout, and empty-field guidelines.
 
 Card title: `WHAT WAS CAPTURED`
 
@@ -61,7 +91,7 @@ Card title: `WHAT WAS CAPTURED`
 
 ---
 
-## Phase B1 — Research
+## Phase B — Research
 
 Tell the user: *"Got it. Running market and owner research — give me a moment."*
 
@@ -145,7 +175,7 @@ Write directly from Phase A answers. Save to artifact.
 
 ### Section 3 — Competitive Set & Market Dynamics
 
-Draft from Phase B1 competitive set research results. Include 3–5 competitors with brief positioning notes and market dynamics relevant to this deal. Flag where data was limited or unavailable.
+Draft from Phase B competitive set research results. Include 3–5 competitors with brief positioning notes and market dynamics relevant to this deal. Flag where data was limited or unavailable.
 
 **Artifact format:**
 
@@ -217,7 +247,7 @@ Invoke three instances of the `research` agent in parallel. Do not proceed to dr
 
 Context to pass to all three invocations:
 - All Phase A answers (property metadata, owner context, asset assessment, insider knowledge)
-- Phase B1 research summaries (competitive set + owner background)
+- Phase B research summaries (competitive set + owner background)
 - Confirmed Positioning Thesis, Brand, and Target Segment from Checkpoint 1
 
 ---
@@ -421,9 +451,9 @@ Surface any gaps from the above sections that require client input before the pi
 
 ## Decisions Made
 
-When all applicable sections are written to the artifact, generate and display a summary card as inline HTML/CSS.
+When all applicable sections are written to the artifact, display the Decisions Made card.
 
-Read `references/ui-style.md` for visual style. This is a display-only card — apply card shell, typography, layout, and flagged-value guidelines.
+Read `references/ui-style.md` for visual style. Generate and display as inline HTML/CSS. This is a display-only card — apply card shell, typography, layout, and flagged-value guidelines.
 
 Card title: `DECISIONS MADE`
 
