@@ -4,7 +4,7 @@ Start a Concept Brief session for Kerten Hospitality. Follow these steps exactly
 
 Look in the current working directory for any file matching `concept-brief-*.md`.
 
-- If one or more files are found: list them and ask the user "Would you like to resume one of these, or start a new brief?"
+- If one or more files are found: list them and ask the user using the AskUserQuestion tool: - Resume previous concept session - Start new concept brief
   - If resuming: read the file, identify the last confirmed section, tell the user where you are picking up from, and begin from the next section. Skip steps 2 and 3 below.
   - If starting new: proceed to step 2.
 - If no file is found: proceed to step 2.
