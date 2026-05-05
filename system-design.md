@@ -24,7 +24,7 @@ Friday 1 May 2026 — present solution architecture only
 
 Kerten Hospitality's Business Development team produces hotel management proposals for prospective property owners. Each proposal is a custom PowerPoint deck (typically 40–80 slides) covering concept positioning, market analysis, experience design, financial projections, and commercial terms. A typical proposal currently takes 2–4 weeks of senior BD time, with significant duplication across deals: market research, financial modelling, image sourcing, slide layout, and copy generation are all redone from scratch.
 
-The bottleneck is not a single step — it is the assembly. Antony Douce (CXO) generates concept direction in long-form conversation; BD translates this into a deck; the revenue team builds financials; design assets are sourced manually from Pinterest; templates are copy-pasted from prior decks. The work is reproducible in structure but creative in content, which makes it a strong fit for AI-assisted assembly with human approval gates.
+The bottleneck is not a single step — it is the assembly. Antony Douce (CXO) generates concept direction in long-form conversation; BD translates this into a deck; Karolina builds financials; design assets are sourced manually from Pinterest; templates are copy-pasted from prior decks. The work is reproducible in structure but creative in content, which makes it a strong fit for AI-assisted assembly with human approval gates.
 
 The system described in this document compresses the proposal lifecycle from weeks to days by separating creative direction (which stays human) from assembly (which becomes automated), with explicit human approval points at each handoff.
 
@@ -57,20 +57,22 @@ The system described in this document compresses the proposal lifecycle from wee
 The system is composed of three phases, each ending with a human approval gate before the next begins.
 
 **Phase 1 — Concept Briefing (Claude Desktop)**
-User holds a guided conversation with Claude inside the Claude Desktop app. Two custom skills drive the conversation: `/market-research` pulls external intelligence (comp set data, market news, owner background); `/submit-brief` validates the conversation output for completeness and synthesises it into a structured Direction Document, which is the sole input to Phase 2.
+User works through a suite of four skills inside the Claude Desktop app. `/market-research` pulls external intelligence (comp set data, market news, owner background); `/submit-brief` validates the conversation and synthesises it into a structured Direction Document; `/financial-model` reads the finished Direction Document and populates the Excel financial template; `/commercial-terms` reads the Direction Document and produces the commercial terms Word document. Phase 1 produces three outputs: `direction.md` (triggers Phase 2), `financial_model.xlsx`, and `commercial_terms.docx`. The latter two are written directly to SharePoint and are not pipeline inputs.
 
 **Phase 2 — Outline Generation (Python pipeline + Web UI)**
 The FastAPI backend receives the Direction Document and calls the Outline Agent, which generates a chapter-and-slide structure. The BD team reviews titles only (no copy) in the Outline Review UI, approving or flagging slides. Flagged slides trigger a partial re-run of the Outline Agent. Only after full BD approval does the system proceed to Phase 3.
 
 **Phase 3 — Document Generation (Python pipeline)**
-Three agents run in parallel from the approved outline: the Copy Agent writes slide content, the Financial Agent queries Lighthouse for available market benchmarks and populates an Excel template, and the Image Sourcing agent calls multiple Apify actors (Pinterest, Google Images, and others) and downloads images with their metadata directly into the proposal. Once all inputs are ready, the Assembly Agent assembles the final PowerPoint using the correct brand template. Outputs are packaged into a delivery folder.
+Three agents run in parallel from the approved outline: the Copy Agent writes slide content, the Financial Agent reads the Phase 1-generated `financial_model.xlsx` from SharePoint and passes it to the Assembly Agent for insertion, and the Image Sourcing agent calls multiple Apify actors (Pinterest, Google Images, and others) and downloads images with their metadata directly into the proposal. Once all inputs are ready, the Assembly Agent assembles the final PowerPoint using the correct brand template. Outputs are packaged into a delivery folder.
 
 ```
 ┌─────────────────────┐
 │  Phase 1            │  Claude Desktop
-│  Concept Briefing   │  /market-research + /submit-brief skills
+│  Concept Briefing   │  /market-research + /submit-brief
+│                     │  /financial-model + /commercial-terms
 └────────┬────────────┘
-         │ Direction Document
+         │ Direction Document (→ Phase 2)
+         │ financial_model.xlsx + commercial_terms.docx (→ SharePoint)
          ▼
 ┌─────────────────────┐
 │  Phase 2            │  Python pipeline + Web UI
@@ -86,12 +88,13 @@ Three agents run in parallel from the approved outline: the Copy Agent writes sl
          ▼
    Delivery Folder
    ├── proposal.pptx
-   ├── financial_model.xlsx
+   ├── financial_model.xlsx  ← generated in Phase 1; injected by Phase 3
+   ├── commercial_terms.docx  ← generated in Phase 1
    ├── concept_brief.pdf
    └── image_bank/
 ```
 
-Key principle: Phase 1 runs on the user's desktop in Claude Desktop. Phases 2 and 3 run on the backend with a thin web UI for approval interactions. The Direction Document is the only handoff between Phase 1 and the pipeline.
+Key principle: Phase 1 runs on the user's desktop in Claude Desktop. Phases 2 and 3 run on the backend with a thin web UI for approval interactions. The Direction Document is the only trigger for the Phase 2 pipeline; `financial_model.xlsx` and `commercial_terms.docx` are also Phase 1 outputs but go directly to SharePoint.
 
 ---
 
@@ -119,6 +122,17 @@ Skills are invoked automatically by Claude when their description matches the cu
 - Hands off to a summarizer agent that distils the full conversation into only the context needed for the Direction Document (see Agents below)
 - Validator agent checks all required fields are populated; surfaces optional gaps to the user for a final review
 - On confirmation, writes the structured Direction Document (markdown file) to the agreed file storage location (see Open Question #1) and triggers the Phase 2 pipeline run
+
+**`/financial-model`** — triggered by the user after `/submit-brief` completes:
+- Reads the finished `direction.md` from the same folder
+- Applies Lighthouse benchmarks where available; flags ADR and occupancy fields as absent and prompts the user to upload CoStar data manually if available (see ADR-011)
+- Populates the Excel financial template with assumptions and a clear inputs tab
+- Writes `financial_model.xlsx` to SharePoint at `/Proposals/{deal-id}/financial_model.xlsx`
+
+**`/commercial-terms`** — triggered by the user after `/submit-brief` completes:
+- Reads the finished `direction.md` from the same folder
+- Generates commercial terms using legal's Word template, derived from the market context and owner portfolio in the Direction Document
+- Writes `commercial_terms.docx` to SharePoint at `/Proposals/{deal-id}/commercial_terms.docx`
 
 ##### Agents
 
@@ -159,7 +173,7 @@ Schema is versioned (`direction_doc_schema_v1`). Schema changes require a new ve
 
 #### Key Design Decisions
 
-- The Direction Document is the only handoff between Phase 1 and the pipeline. It must capture everything the user communicates in the conversation — all downstream agents are driven from it with no further human input (other than changes to the outline).
+- The Direction Document is the only trigger for Phase 2. It must capture everything the user communicates in the conversation — all downstream pipeline agents are driven from it with no further human input (other than changes to the outline). Phase 1 also produces `financial_model.xlsx` and `commercial_terms.docx` via separate skills; these go directly to SharePoint and are not pipeline inputs.
 - There is no CoStar API access. Lighthouse is the source for available market benchmarks; the mechanism for pulling this data mid-conversation is TBD (see Plugin Components above). Lighthouse does not provide ADR or occupancy data — those fields require manual input from the user. The Financial Agent in Phase 3 also integrates with Lighthouse under the same constraint (see ADR-011).
 - The plugin is a `.claude-plugin` directory hosted as a GitHub repository. It contains four component types: skills, slash commands, agents, and an MCP config. "Marketplace" is the Claude Desktop UI label for the URL-based install flow — there is no formal listing or registry.
 - Doc is sent to SharePoint table to keep track of all concept briefs triggered.
@@ -234,12 +248,10 @@ Three agents run in parallel immediately after outline approval, then feed into 
 
 #### Financial Agent
 
-- **Model:** Claude Sonnet 4.6 + tool calls.
-- **Tools:** Lighthouse (market benchmarks), openpyxl (Excel template population).
-- **Workflow:** receive revenue stream list from Direction Document → query Lighthouse for available market benchmarks → generate assumptions with cited reasoning, explicitly flagging where ADR and occupancy data are absent and must be manually provided → populate Excel template with a clear inputs tab and assumptions list.
-- (Optional)**Approval gate:** The revenue team validates assumptions, including any fields left blank due to Lighthouse data limitations. Only after `FinancialModel.validated == True` does the Assembly Agent insert the financial slide. Users can upload a manually revised Excel to override auto-population.
-- **Failure:** Lighthouse unavailable → flag all market assumptions as unverified and surface for revenue team review.
-- **Data limitation:** Lighthouse does not provide ADR or occupancy data. The financial model will have explicit gaps for these fields unless the BD team supplies them manually (see ADR-011).
+- **Role:** Inject only. Financial assumptions and the populated Excel model are determined in Phase 1 via `/financial-model`. The Phase 3 Financial Agent reads the pre-generated `financial_model.xlsx` from SharePoint and passes it to the Assembly Agent for insertion into the financial slides.
+- **Input:** `financial_model.xlsx` from SharePoint at `/Proposals/{deal-id}/financial_model.xlsx` (Phase 1 output).
+- **Output:** Financial data passed to the Assembly Agent.
+- **Failure:** `financial_model.xlsx` absent or invalid → Phase 3 pauses and surfaces an error to BD to complete the Phase 1 `/financial-model` skill first.
 
 #### Image Sourcing
 
@@ -261,7 +273,8 @@ Three agents run in parallel immediately after outline approval, then feed into 
 
 All outputs collected into a single delivery folder:
 - `proposal.pptx` — fully assembled brand-compliant deck
-- `financial_model.xlsx` — validated financial model with assumptions tab
+- `financial_model.xlsx` — generated in Phase 1; already in SharePoint; referenced by Assembly Agent
+- `commercial_terms.docx` — generated in Phase 1; already in SharePoint
 - `concept_brief.pdf` — rendered Direction Document for human reference
 - `image_bank/` — all sourced and approved images
 
@@ -338,7 +351,7 @@ Images are downloaded to Modal's ephemeral filesystem at `/tmp/{proposal_id}/ima
 
 ### 5.6 Financial Model
 
-The Financial Agent writes the populated workbook to Modal's ephemeral filesystem at `/tmp/{proposal_id}/financial_model.xlsx`, surfaces assumptions to the financial reviewer via the UI, and on validation uploads the final `.xlsx` to SharePoint `delivery/financial_model.xlsx`. The validation state is held in memory for the duration of the Phase 3 run; the validated file in SharePoint is the durable artefact.
+Generated in Phase 1 by the `/financial-model` skill. The skill reads `direction.md`, applies available Lighthouse benchmarks, and writes the populated workbook directly to SharePoint at `/Proposals/{deal-id}_{property-name}/financial_model.xlsx`. The Phase 3 Financial Agent reads this file from SharePoint and passes it to the Assembly Agent — it does not regenerate or modify it.
 
 ```json
 {
@@ -378,7 +391,7 @@ The controlled vocabulary that constrains the Outline Agent. Approximately 20 ch
 | ch_partners | Partners | Optional | 0–3 | Noor Studio, brand partners |
 | ch_team | Team & Operator | Fixed | 1–2 | |
 | ch_phasing | Phasing & Timeline | Optional | 0–2 | If brief includes phasing |
-| ch_financials | Financial Projections | Fixed | 2–3 | Revenue team-validated content |
+| ch_financials | Financial Projections | Fixed | 2–3 | Karolina-validated content |
 | ch_commercial | Commercial Terms | Fixed | 1–2 | |
 | ch_disclaimer | Disclaimer | Fixed | 1 | Always last |
 
@@ -402,11 +415,11 @@ PDF + structured assets (fonts, colour tokens, logo variants) per brand. Loaded 
 |---|---|---|---|---|---|
 | 1 | Apify actors | Returns < N images across all sources | Response count check | Reformulate query 2× across all actors | Placeholder inserted; flagged in delivery folder |
 | 2 | Apify actors | Rate limit (429) | HTTP status | Exponential backoff | Pause + notify user |
-| 3 | Lighthouse API | Unavailable / 5xx | Timeout / status | Retry 3× w/ backoff | Flag all market assumptions as unverified; surface for revenue team review |
+| 3 | Lighthouse API | Unavailable / 5xx | Timeout / status | Retry 3× w/ backoff | Flag all market assumptions as unverified; surface to Karolina |
 | 4 | Outline Agent | Hallucinated chapter | Validator rejects | Re-prompt with allowed list | Hard fail → escalate |
 | 5 | Outline Agent | Slide count mismatch | Cross-check after gen | Re-prompt with correction | Use list count, override stated |
-| 6 | Financial Agent | Lighthouse data missing / ADR+occupancy absent | Empty response or known gap | Flag specific fields as absent; surface for revenue team review | Manual Excel upload override |
-| 7 | Financial Agent | Revenue team rejects model | Approval status | Surface comments to BD | Manual Excel upload override |
+| 6 | Financial Agent | Lighthouse data missing / ADR+occupancy absent | Empty response or known gap | Flag specific fields as absent; surface to Karolina | Manual Excel upload override |
+| 7 | Financial Agent | Karolina rejects model | Approval status | Surface comments to BD | Manual Excel upload override |
 | 8 | Copy Agent | Generated copy exceeds slot | Token / char count check | Re-prompt with length constraint | Truncate + flag |
 | 9 | Assembly Agent | python-pptx write fails | Exception | Log slide id, skip | Generate without slide, flag |
 | 10 | BD UI | User adds 12+ chapters | Count check | Warning at 8 | Hard cap at 12 |
@@ -429,7 +442,7 @@ These need to be closed before or during build. Each has an owner and a target c
 | 6 | Final Chapter Library — validate ~20 chapters with Antony, Sara, Marina before build start | Shaheer + Theo | Wed 30 Apr |
 | 7 | Template inventory — how many templates exist today? What is the tagging effort for the Template Knowledge Base? | Sara + Marina | Wed 30 Apr |
 | 8 | Brand guideline format — PDF, Figma, or structured design tokens? | Marina | Wed 30 Apr |
-| 9 | Financial approval SLA — CFO + revenue team lead; what is the expected turnaround on financial assumptions review? | Theo | Wed 30 Apr |
+| 9 | Financial approval SLA — CFO + Karolina; what is the expected turnaround on financial assumptions review? | Theo | Wed 30 Apr |
 | 10 | Experience slides — should experiences be one-per-slide, all-on-one, or configurable? Drives Assembly Agent template logic | Antony + Sara | Fri 2 May |
 | 11 | Phase 1 output format — should `/submit-brief` also produce a 2-page human-readable Word brief in addition to the markdown Direction Document? | Theo | Fri 2 May |
 | 12 | RFP-internal contradiction handling — when an uploaded RFP contains conflicting signals (e.g. "upper upscale" positioning vs. a low target ADR), should the tool flag and pause for human input, or self-resolve with explicit rationale? First full run (1 May) surfaced this as a real case. | Shaheer + Theo | TBD |
@@ -444,14 +457,14 @@ Build is sequenced so that components with locked decisions start Monday 27 Apri
 | Week | Workstream | Deliverables |
 |---|---|---|
 | Week 0 (27 Apr–1 May) | Decisions + scaffolding | Close open questions 1–9. Modal app + Vercel project + GitHub repo + CI. SharePoint `/Proposals/` folder structure agreed with Douglas. Direction Document validator. Chapter Library v1 YAML. Pinterest API exploration (1-day spike on day 1). |
-| Week 1 | Phase 1 (Claude Desktop) | Custom MCP server. `/market-research` and `/submit-brief` skills. End-to-end submit flow (Claude Desktop → SharePoint `direction.md`). Test with one historical brief (Marrakech). **Status (May 4): ~80% complete. Remaining: intermediate forms + per-section context engineering. Target completion: EOD May 4.** |
+| Week 1 | Phase 1 (Claude Desktop) | Custom MCP server. `/market-research`, `/submit-brief`, `/financial-model`, and `/commercial-terms` skills. End-to-end submit flow (Claude Desktop → SharePoint). Test with one historical brief (Marrakech). **Status (May 5): Concept brief skill complete. Adding `/financial-model` and `/commercial-terms` skills this week. Target completion: EOD May 9.** |
 | Week 2 | Phase 2: Outline Agent + Validator + UI | Outline Agent constrained by Chapter Library. Validator. Outline Review UI (chapter tree, approve/flag/edit). End-to-end Direction Document → approved outline. **Status (May 4): Starts May 5. Primarily UI work. Target completion: May 11.** |
 | Week 3 | Phase 3: Copy Agent + Financial Agent | Copy Agent end-to-end. Lighthouse integration. Financial Agent + Excel generation (with explicit ADR/occupancy gap handling). |
 | Week 4 | Phase 3: Image Sourcing + Assembly Agent | Pinterest integration. Auto-placement pipeline (download → Assembly → SharePoint image_bank). Template KB tagged. Assembly Agent end-to-end `proposal.pptx`. Output packaging. |
 | Week 5 | Integration + dogfooding | Full end-to-end runs on 3 historical briefs (Marrakech, Apollo, Nile). Failure mode testing. Performance pass. |
 | Week 6 (buffer) | Polish + handoff | Bug fixes from BD pilot. Documentation. Training session. Launch. |
 
-**Critical path:** Lighthouse integration → Financial Agent (Week 3). CoStar is not available; Lighthouse is the confirmed market data source but does not provide ADR or occupancy — the financial model will have explicit gaps for those fields pending manual input from the revenue team. Apify actors exploration (Week 0) → Image Sourcing (Week 4). A 1-day spike in Week 0 characterises image output quality across all configured Apify actors and informs the query and metadata strategy for the auto-placement pipeline.
+**Critical path:** Lighthouse integration → Financial Agent (Week 3). CoStar is not available; Lighthouse is the confirmed market data source but does not provide ADR or occupancy — the financial model will have explicit gaps for those fields pending manual input from Karolina. Apify actors exploration (Week 0) → Image Sourcing (Week 4). A 1-day spike in Week 0 characterises image output quality across all configured Apify actors and informs the query and metadata strategy for the auto-placement pipeline.
 
 ---
 
@@ -513,7 +526,7 @@ ADRs capture significant decisions in a permanent, dated record. Each ADR has a 
 
 **Context:** CoStar provides ADR/occupancy benchmarks. Calling it during the concept conversation in Phase 1 may distract Antony from creative direction. The Financial Agent in Phase 3 needs it for model inputs.
 
-**Decision:** Phase 1: CoStar is opt-in via `/market-research`. Phase 3: Financial Agent always attempts CoStar; on failure, uses cached comp set with stale flag surfaced for revenue team review.
+**Decision:** Phase 1: CoStar is opt-in via `/market-research`. Phase 3: Financial Agent always attempts CoStar; on failure, uses cached comp set with stale flag surfaced to Karolina.
 
 **Consequences:** Positive: cleaner Phase 1 UX; resilient to CoStar outages. Negative: cache freshness is a concern — need TTL and invalidation policy.
 
@@ -573,9 +586,9 @@ ADRs capture significant decisions in a permanent, dated record. Each ADR has a 
 
 **Context:** ADR-005 assumed CoStar API access for ADR/occupancy benchmarks in both Phase 1 (`/market-research`) and the Phase 3 Financial Agent. CoStar access is not available and no resolution path exists within the project timeline.
 
-**Decision:** Lighthouse is the sole market data integration for both Phase 1 and Phase 3. Lighthouse does not provide ADR or occupancy data. These fields will be explicitly absent in the Direction Document's Financial Anchors section and in the Financial Agent's Excel output unless the BD team supplies them manually. The system must surface these gaps clearly — never silently omit or fabricate them.
+**Decision:** Lighthouse is the sole market data integration for both Phase 1 and Phase 3. Lighthouse does not provide ADR or occupancy data. These fields will be explicitly absent in the Direction Document's Financial Anchors section and in the Financial Agent's Excel output unless the BD team or Karolina supplies them manually. The system must surface these gaps clearly — never silently omit or fabricate them.
 
-**Consequences:** Positive: unblocks the Financial Agent build immediately; no external credential dependency. Negative: the financial model will have structural gaps for ADR/occupancy on every deal until Kerten secures a data source that covers these metrics. The financial review gate becomes more important as a result, since these fields will need to be filled manually before the model is valid.
+**Consequences:** Positive: unblocks the Financial Agent build immediately; no external credential dependency. Negative: the financial model will have structural gaps for ADR/occupancy on every deal until Kerten secures a data source that covers these metrics. Karolina's review gate becomes more important as a result, since she will need to fill these fields manually before the model is valid.
 
 **Supersedes:** ADR-005
 
@@ -595,6 +608,20 @@ ADRs capture significant decisions in a permanent, dated record. Each ADR has a 
 Within Phase 2 the React UI holds in-progress approval state in memory; on submit, FastAPI writes `outline-approved.json` to SharePoint. Within Phase 3 Modal handles fan-out and fan-in natively via `modal.gather()`. Brand templates live in GitHub and are baked into the Modal image at deploy time. Auth is handled by the SharePoint / Microsoft 365 layer the BD team already uses. No Postgres, no Supabase, no Azure.
 
 **Consequences:** Positive: three vendors instead of four (Modal + Vercel + GitHub + SharePoint, all replaceable); no database to provision, migrate, or back up; SharePoint is infrastructure Kerten already owns; the system can be redeployed or handed over without data migration. Negative: no audit trail beyond SharePoint version history; resuming a crashed Phase 3 run means re-running from `outline-approved.json` rather than from the last in-flight checkpoint; assumes outline review happens in one sitting — validated assumption (see `DECISIONS.md`).
+
+---
+
+### ADR-012: Financial modeling and commercial terms move to Phase 1
+
+**Status:** Accepted — 5 May 2026
+
+**Context:** The Phase 3 Financial Agent was originally responsible for querying Lighthouse, populating the Excel template, and surfacing assumptions for Karolina's approval. On 4 May 2026, Theo communicated to the Kerten BD team that Phase 1 produces the Excel financial model. On 5 May 2026, Vela confirmed this as the design intent: financial modeling and commercial terms should be user-facing Phase 1 skills operating on the finished concept brief, not background Phase 3 pipeline steps.
+
+**Decision:** Add two new Phase 1 slash commands: `/financial-model` (reads `direction.md`, applies Lighthouse benchmarks where available, populates Excel template, writes to SharePoint) and `/commercial-terms` (reads `direction.md`, produces commercial terms Word document using legal's template, writes to SharePoint). Both run as separate Claude Desktop conversations after the concept brief is complete. The Phase 3 Financial Agent role is reduced to injection only — it reads the Phase 1-generated `financial_model.xlsx` from SharePoint and passes it to the Assembly Agent.
+
+**Consequences:** Positive: aligns with what was communicated to the client on 4 May; keeps financially sensitive decisions in a human-in-the-loop Phase 1 conversation rather than a background automated process; simplifies Phase 3. Negative: Phase 1 is now three separate conversations the user must initiate sequentially; `/financial-model` still depends on the user manually uploading CoStar data since no API access exists (see ADR-011).
+
+**Supersedes:** Phase 3 Financial Agent generation workflow (not a prior ADR, but supersedes the original §4.3 Financial Agent design).
 
 ---
 
