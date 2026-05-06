@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mock 4 — Visual Conversions · Ennakhil Resort</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --surface: #ffffff;
+    --ink: #1a1a1a;
+    --ink-muted: #555555;
+    --ink-tertiary: #8a8475;
+    --rule: rgba(0,0,0,0.10);
+    --accent: #6f3b1d;
+    --accent-2: #c8956a;
+    --accent-3: #d8b27a;
+    --accent-soft: #f1e6d8;
+    --pos: #2f6b3a;
+    --neg: #a23a2c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .doc { max-width: 1100px; margin: 0 auto; padding: 48px 32px 96px; }
+
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    font-weight: 500;
+  }
+  h1 {
+    margin: 8px 0 12px;
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .meta { color: var(--ink-muted); font-size: 14px; }
+
+  h2.section {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin: 56px 0 18px;
+    font-weight: 500;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  h3.viz-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 4px;
+  }
+  .viz-sub {
+    font-size: 12px;
+    color: var(--ink-tertiary);
+    letter-spacing: 0.04em;
+    margin-bottom: 20px;
+  }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+
+  /* === 1. Comp set table === */
+  table.comp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.comp th, table.comp td {
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: middle;
+  }
+  table.comp th {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    font-weight: 500;
+  }
+  table.comp td.brand strong { font-weight: 500; }
+  table.comp td.brand small { color: var(--ink-tertiary); display: block; font-size: 11px; }
+  table.comp td.rate { font-variant-numeric: tabular-nums; font-weight: 500; }
+  table.comp tr.us { background: var(--accent-soft); }
+  table.comp tr.us td.brand strong { color: var(--accent); }
+  .pos-pill {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    background: rgba(0,0,0,0.05);
+    color: var(--ink-muted);
+  }
+  .pos-pill.luxe { background: #2a1b10; color: #e8d3b4; }
+  .pos-pill.life { background: var(--accent-soft); color: var(--accent); }
+  .pos-pill.com { background: #e7e3d6; color: #6e6648; }
+
+  /* === 2. ADR ladder === */
+  .ladder { margin-top: 12px; }
+  .ladder-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 110px;
+    gap: 14px;
+    align-items: center;
+    padding: 9px 0;
+    font-size: 13px;
+  }
+  .ladder-bar {
+    height: 10px;
+    background: rgba(0,0,0,0.04);
+    position: relative;
+  }
+  .ladder-bar .fill {
+    position: absolute;
+    inset: 0;
+    background: var(--accent-2);
+  }
+  .ladder-row.us .ladder-bar { background: rgba(111,59,29,0.15); }
+  .ladder-row.us .ladder-bar .fill { background: var(--accent); }
+  .ladder-row.us .name strong { color: var(--accent); }
+  .ladder-row .price { text-align: right; font-variant-numeric: tabular-nums; }
+  .ladder-row .name strong { font-weight: 500; }
+
+  /* === 3. Seasonality chart === */
+  .seasonality {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 8px;
+    align-items: end;
+    height: 220px;
+    margin: 24px 0 12px;
+    padding-bottom: 28px;
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+  }
+  .seas-bar {
+    position: relative;
+    background: var(--accent-2);
+    border-radius: 2px 2px 0 0;
+  }
+  .seas-bar .lbl {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--ink-tertiary);
+    letter-spacing: 0.04em;
+  }
+  .seas-bar .val {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .seas-bar.peak { background: var(--accent); }
+  .seas-bar.trough { background: #d8d2c2; }
+  .seas-bar.ramadan { background: var(--accent-3); opacity: 0.6; }
+  .seas-legend {
+    display: flex;
+    gap: 18px;
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 16px;
+  }
+  .seas-legend .sw {
+    display: inline-block;
+    width: 10px; height: 10px;
+    margin-right: 6px;
+    vertical-align: -1px;
+  }
+
+  /* === 4. Pillars 4-card === */
+  .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .pillar-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 22px 20px;
+    position: relative;
+  }
+  .pillar-card .icon {
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--accent);
+    color: var(--accent);
+    display: grid; place-items: center;
+    font-family: "Charter", Georgia, serif;
+    font-style: italic;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .pillar-card h4 { margin: 0 0 8px; font-size: 15px; font-weight: 500; }
+  .pillar-card p { margin: 0; font-size: 12.5px; color: var(--ink-muted); line-height: 1.55; }
+
+  /* === 5. Phasing Gantt === */
+  .gantt {
+    margin: 16px 0 8px;
+    font-size: 12px;
+  }
+  .gantt-axis {
+    display: grid;
+    grid-template-columns: 220px repeat(5, 1fr);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+  }
+  .gantt-axis .y {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-tertiary);
+    text-transform: uppercase;
+  }
+  .gantt-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    padding: 8px 0;
+  }
+  .gantt-row .lbl { font-size: 13px; }
+  .gantt-row .lbl small { color: var(--ink-tertiary); display: block; font-size: 11px; }
+  .gantt-track {
+    position: relative;
+    height: 22px;
+    background: rgba(0,0,0,0.025);
+    border-radius: 2px;
+  }
+  .gantt-bar {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    background: var(--accent-2);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    color: white;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .gantt-bar.deep { background: var(--accent); }
+  .gantt-bar.soft { background: var(--accent-3); color: var(--ink); }
+  .gantt-marker {
+    position: absolute;
+    top: -4px; bottom: -4px;
+    width: 2px;
+    background: var(--neg);
+  }
+  .gantt-marker .tag {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--neg);
+    color: white;
+    padding: 1px 5px;
+    font-size: 9px;
+    border-radius: 1px;
+    white-space: nowrap;
+    letter-spacing: 0.06em;
+  }
+
+  /* === 6. Site map === */
+  .map-wrap {
+    position: relative;
+    background: linear-gradient(180deg, #faf6ec 0%, #f0ead8 100%);
+    border: 1px solid var(--rule);
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .atlas {
+    position: absolute;
+    bottom: 50%;
+    left: 0; right: 0;
+    height: 30%;
+    background: linear-gradient(180deg, transparent 0%, #c4a574 70%, #a07f50 100%);
+    clip-path: polygon(0 100%, 8% 50%, 18% 80%, 28% 30%, 40% 70%, 52% 20%, 64% 60%, 76% 40%, 88% 75%, 100% 50%, 100% 100%);
+    opacity: 0.5;
+  }
+  .road {
+    position: absolute;
+    height: 2px;
+    background: var(--ink);
+    opacity: 0.3;
+  }
+  .road .label {
+    position: absolute;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    background: var(--bg);
+    padding: 1px 6px;
+    text-transform: uppercase;
+  }
+  .pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .pin .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    margin: 0 auto;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .pin.us .dot {
+    width: 18px; height: 18px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(111,59,29,0.2), 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .pin.comp .dot { background: #888; }
+  .pin.partner .dot { background: var(--accent-2); }
+  .pin .lbl {
+    margin-top: 6px;
+    font-size: 11px;
+    background: var(--bg);
+    padding: 2px 6px;
+    white-space: nowrap;
+    border: 1px solid var(--rule);
+    line-height: 1.2;
+  }
+  .pin .lbl small { display: block; font-size: 9px; color: var(--ink-tertiary); letter-spacing: 0.06em; }
+  .map-legend {
+    position: absolute;
+    bottom: 12px; left: 12px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  .map-legend .row { display: flex; align-items: center; gap: 8px; margin: 3px 0; }
+  .map-legend .sw {
+    width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+  }
+
+  /* === 7. KPI tiles === */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 0;
+  }
+  .kpi {
+    background: var(--surface);
+    padding: 18px 16px;
+  }
+  .kpi .lbl {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin-bottom: 6px;
+  }
+  .kpi .num {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .kpi .delta { font-size: 11px; margin-top: 3px; color: var(--ink-muted); }
+  .kpi .delta.up { color: var(--pos); }
+</style>
+</head>
+<body>
+
+<div class="doc">
+
+  <header>
+    <div class="eyebrow">Visual Conversions · Mock 4</div>
+    <h1>Ennakhil Resort — Charts &amp; Tables</h1>
+    <div class="meta">A reference set of how each text-heavy section can convert into a graphic. Mix and match into any of the other layouts.</div>
+  </header>
+
+  <!-- 1. KPI tiles -->
+  <h2 class="section">1 · Financial Anchors → KPI Tiles</h2>
+  <div class="kpis">
+    <div class="kpi"><div class="lbl">Keys</div><div class="num">228</div><div class="delta">220 + 8 villas</div></div>
+    <div class="kpi"><div class="lbl">Stab. ADR</div><div class="num">$170</div><div class="delta up">+32% vs '23</div></div>
+    <div class="kpi"><div class="lbl">RevPAR</div><div class="num">$126</div><div class="delta">FY2030</div></div>
+    <div class="kpi"><div class="lbl">Occupancy</div><div class="num">74%</div><div class="delta">vs 71% mkt</div></div>
+    <div class="kpi"><div class="lbl">GOP</div><div class="num">33%</div><div class="delta">~67M MAD</div></div>
+    <div class="kpi"><div class="lbl">F&amp;B share</div><div class="num">40%</div><div class="delta up">vs 20–25%</div></div>
+  </div>
+
+  <!-- 2. Comp set -->
+  <h2 class="section">2 · Competitive Set → Comparison Table</h2>
+  <div class="panel">
+    <h3 class="viz-title">Marrakech 5★ Comp Set</h3>
+    <div class="viz-sub">Distance · keys · live rate · positioning axis · live May 2026</div>
+    <table class="comp">
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Distance</th>
+          <th>Keys</th>
+          <th>Rate from</th>
+          <th>Positioning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="brand"><strong>Royal Mansour</strong><small>Medina</small></td><td>City centre</td><td>—</td><td class="rate">$1,658+</td><td><span class="pos-pill luxe">Ultra-luxury</span></td></tr>
+        <tr><td class="brand"><strong>Amanjena</strong><small>Aman</small></td><td>~12 km, N9</td><td>39 + 6</td><td class="rate">$1,296</td><td><span class="pos-pill luxe">Ultra-luxury</span></td></tr>
+        <tr><td class="brand"><strong>La Mamounia</strong><small>Indep.</small></td><td>Medina</td><td>—</td><td class="rate">$524–19,218</td><td><span class="pos-pill luxe">Palace</span></td></tr>
+        <tr><td class="brand"><strong>Selman Marrakech</strong><small>Indep.</small></td><td>3–4 km medina</td><td>55 + 5</td><td class="rate">—</td><td><span class="pos-pill life">Design urban</span></td></tr>
+        <tr><td class="brand"><strong>Fairmont Royal Palm</strong><small>Accor</small></td><td>~12 km SW</td><td>Large</td><td class="rate">MAD 2,758</td><td><span class="pos-pill life">Big-box 5★</span></td></tr>
+        <tr><td class="brand"><strong>Nobu Marrakech</strong><small>Hivernage</small></td><td>City centre</td><td>71 ste</td><td class="rate">$201–1,007</td><td><span class="pos-pill life">Lifestyle urban</span></td></tr>
+        <tr class="us"><td class="brand"><strong>Ennakhil Resort</strong><small>The House Hotel — target</small></td><td>~12 km, N9</td><td>228</td><td class="rate">$170 stab.</td><td><span class="pos-pill life">Lifestyle resort</span></td></tr>
+        <tr><td class="brand"><strong>Kimpton Marrakech</strong><small>IHG, pipeline</small></td><td>SW corridor</td><td>67</td><td class="rate">Q4 2026</td><td><span class="pos-pill life">Lifestyle pipeline</span></td></tr>
+        <tr><td class="brand"><strong>Riu / Be Live / Barceló</strong><small>Palmeraie</small></td><td>Adjacent</td><td>—</td><td class="rate">$60–90</td><td><span class="pos-pill com">All-inclusive</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. ADR ladder -->
+  <h2 class="section">3 · ADR Ladder → Horizontal bars</h2>
+  <div class="panel">
+    <h3 class="viz-title">Where Ennakhil Sits on the ADR Ladder</h3>
+    <div class="viz-sub">Entry rate per night · USD · live May 2026</div>
+    <div class="ladder">
+      <div class="ladder-row"><div class="name"><strong>Royal Mansour</strong></div><div class="ladder-bar"><div class="fill" style="width: 100%"></div></div><div class="price">$1,658</div></div>
+      <div class="ladder-row"><div class="name"><strong>Amanjena</strong></div><div class="ladder-bar"><div class="fill" style="width: 78%"></div></div><div class="price">$1,296</div></div>
+      <div class="ladder-row"><div class="name"><strong>Nobu Marrakech</strong> <small style="color:var(--ink-tertiary)">peak</small></div><div class="ladder-bar"><div class="fill" style="width: 60%"></div></div><div class="price">$1,007</div></div>
+      <div class="ladder-row"><div class="name"><strong>La Mamounia</strong> <small style="color:var(--ink-tertiary)">entry</small></div><div class="ladder-bar"><div class="fill" style="width: 32%"></div></div><div class="price">$524</div></div>
+      <div class="ladder-row"><div class="name"><strong>Nobu Marrakech</strong> <small style="color:var(--ink-tertiary)">discount</small></div><div class="ladder-bar"><div class="fill" style="width: 12%"></div></div><div class="price">$201</div></div>
+      <div class="ladder-row us"><div class="name"><strong>Ennakhil Resort</strong> <small style="color:var(--accent)">target stab.</small></div><div class="ladder-bar"><div class="fill" style="width: 10%"></div></div><div class="price">$170</div></div>
+      <div class="ladder-row"><div class="name"><strong>Riu / Be Live</strong> <small style="color:var(--ink-tertiary)">all-inc.</small></div><div class="ladder-bar"><div class="fill" style="width: 5%"></div></div><div class="price">$60–90</div></div>
+    </div>
+  </div>
+
+  <!-- 4. Pillars 4-up -->
+  <h2 class="section">4 · Concept Pillars → 4-card grid</h2>
+  <div class="pillars">
+    <div class="pillar-card">
+      <div class="icon">i</div>
+      <h4>Atlas Threshold</h4>
+      <p>Public spaces, restaurants, pools, rooms oriented to the unobstructed Atlas silhouette and amber dust-light of the N9.</p>
+    </div>
+    <div class="pillar-card">
+      <div class="icon">ii</div>
+      <h4>Living Maker Souk</h4>
+      <p>Working craft village within the property — rotating Marrakech artisans producing limited pieces for rooms and boutique.</p>
+    </div>
+    <div class="pillar-card">
+      <div class="icon">iii</div>
+      <h4>Garden as Story</h4>
+      <p>5 ha plot as one landscape composition — spine, kitchen garden, water rills referencing khettara hydraulic heritage.</p>
+    </div>
+    <div class="pillar-card">
+      <div class="icon">iv</div>
+      <h4>Resort MICE Pavilion</h4>
+      <p>Purpose-built 500–600 m² ballroom — only lifestyle alternative to medina palaces for Pan-African / European corporates.</p>
+    </div>
+  </div>
+
+  <!-- 5. Seasonality -->
+  <h2 class="section">5 · Marrakech Seasonality → Bar chart</h2>
+  <div class="panel">
+    <h3 class="viz-title">Marrakech Occupancy by Month</h3>
+    <div class="viz-sub">Approximate market average · % occupancy · twin peaks Mar–May / Sep–Nov · soft trough Jul–Aug</div>
+    <div class="seasonality">
+      <div class="seas-bar" style="height: 75%"><span class="val">75%</span><span class="lbl">Jan</span></div>
+      <div class="seas-bar ramadan" style="height: 55%"><span class="val">55%</span><span class="lbl">Feb</span></div>
+      <div class="seas-bar peak" style="height: 88%"><span class="val">88%</span><span class="lbl">Mar</span></div>
+      <div class="seas-bar peak" style="height: 90%"><span class="val">90%</span><span class="lbl">Apr</span></div>
+      <div class="seas-bar peak" style="height: 85%"><span class="val">85%</span><span class="lbl">May</span></div>
+      <div class="seas-bar" style="height: 65%"><span class="val">65%</span><span class="lbl">Jun</span></div>
+      <div class="seas-bar trough" style="height: 38%"><span class="val">38%</span><span class="lbl">Jul</span></div>
+      <div class="seas-bar trough" style="height: 35%"><span class="val">35%</span><span class="lbl">Aug</span></div>
+      <div class="seas-bar peak" style="height: 87%"><span class="val">87%</span><span class="lbl">Sep</span></div>
+      <div class="seas-bar peak" style="height: 89%"><span class="val">89%</span><span class="lbl">Oct</span></div>
+      <div class="seas-bar peak" style="height: 82%"><span class="val">82%</span><span class="lbl">Nov</span></div>
+      <div class="seas-bar" style="height: 78%"><span class="val">78%</span><span class="lbl">Dec</span></div>
+    </div>
+    <div class="seas-legend">
+      <span><span class="sw" style="background: var(--accent);"></span>Peak season</span>
+      <span><span class="sw" style="background: var(--accent-2);"></span>Shoulder</span>
+      <span><span class="sw" style="background: #d8d2c2;"></span>Trough</span>
+      <span><span class="sw" style="background: var(--accent-3); opacity: 0.6;"></span>Ramadan impact</span>
+    </div>
+  </div>
+
+  <!-- 6. Phasing Gantt -->
+  <h2 class="section">6 · Phasing → Gantt timeline</h2>
+  <div class="panel">
+    <h3 class="viz-title">Project Phasing 2026 → 2030</h3>
+    <div class="viz-sub">IE feasibility model targets · risk window flagged for African pipeline slippage</div>
+    <div class="gantt">
+      <div class="gantt-axis">
+        <div></div>
+        <div class="y">2026</div>
+        <div class="y">2027</div>
+        <div class="y">2028</div>
+        <div class="y">2029</div>
+        <div class="y">2030</div>
+      </div>
+      <div class="gantt-row">
+        <div class="lbl">Pre-HMA &amp; due diligence<small>Operator selection · term sheet</small></div>
+        <div class="gantt-track"><div class="gantt-bar deep" style="left: 0%; width: 14%">Q2–Q3</div></div>
+      </div>
+      <div class="gantt-row">
+        <div class="lbl">HMA + TSA execution<small>Design partner appointment</small></div>
+        <div class="gantt-track"><div class="gantt-bar deep" style="left: 14%; width: 12%">Q4–Q1</div></div>
+      </div>
+      <div class="gantt-row">
+        <div class="lbl">Design &amp; permitting<small>Master plan · schematic · approvals</small></div>
+        <div class="gantt-track"><div class="gantt-bar" style="left: 20%; width: 18%">2027</div></div>
+      </div>
+      <div class="gantt-row">
+        <div class="lbl">Construction<small>Hotel + amenities + 8 villas</small></div>
+        <div class="gantt-track"><div class="gantt-bar" style="left: 26%; width: 56%">2027 → 2030 build</div></div>
+      </div>
+      <div class="gantt-row">
+        <div class="lbl">Pre-opening<small>GM + HOD · Maker Souk · MACAAL</small></div>
+        <div class="gantt-track"><div class="gantt-bar soft" style="left: 30%; width: 14%">Mid '27</div></div>
+      </div>
+      <div class="gantt-row">
+        <div class="lbl">Ramp-up<small>68 → 70 → 72 → 74% occ.</small></div>
+        <div class="gantt-track">
+          <div class="gantt-bar deep" style="left: 44%; width: 56%">FY27 — FY30 stabilise</div>
+          <div class="gantt-marker" style="left: 88%"><span class="tag">FIFA 2030</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Site map -->
+  <h2 class="section">7 · Location → Annotated Site Map</h2>
+  <div class="panel">
+    <h3 class="viz-title">The N9 Axis</h3>
+    <div class="viz-sub">Eastern corridor positioning · 12 km from medina · Atlas-facing</div>
+    <div class="map-wrap">
+      <div class="atlas"></div>
+
+      <!-- Roads -->
+      <div class="road" style="top: 75%; left: 5%; right: 5%; transform: rotate(-2deg);">
+        <div class="label" style="left: 2%; top: -10px;">N9 → Ouarzazate</div>
+      </div>
+      <div class="road" style="top: 60%; left: 5%; width: 35%; transform: rotate(20deg); transform-origin: left;">
+        <div class="label" style="right: -10px; top: -10px;">N8 → Fès</div>
+      </div>
+
+      <!-- Pins -->
+      <div class="pin comp" style="top: 70%; left: 12%;">
+        <div class="dot"></div>
+        <div class="lbl">Medina<small>La Mamounia · Royal Mansour</small></div>
+      </div>
+      <div class="pin comp" style="top: 80%; left: 32%;">
+        <div class="dot"></div>
+        <div class="lbl">Hivernage<small>Nobu</small></div>
+      </div>
+      <div class="pin partner" style="top: 32%; left: 30%;">
+        <div class="dot"></div>
+        <div class="lbl">Palmeraie<small>Riu · Be Live · Barceló</small></div>
+      </div>
+      <div class="pin us" style="top: 55%; left: 58%;">
+        <div class="dot"></div>
+        <div class="lbl"><strong>Ennakhil Resort</strong><small>5 ha · 228 keys · N8 × N9</small></div>
+      </div>
+      <div class="pin comp" style="top: 78%; left: 70%;">
+        <div class="dot"></div>
+        <div class="lbl">Amanjena<small>~12 km, N9</small></div>
+      </div>
+      <div class="pin partner" style="top: 86%; left: 80%;">
+        <div class="dot"></div>
+        <div class="lbl">MACAAL<small>~8 km · cultural partner</small></div>
+      </div>
+
+      <div class="map-legend">
+        <div class="row"><span class="sw" style="background: var(--accent);"></span>Subject property</div>
+        <div class="row"><span class="sw" style="background: #888;"></span>Comp set</div>
+        <div class="row"><span class="sw" style="background: var(--accent-2);"></span>Partner / context</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

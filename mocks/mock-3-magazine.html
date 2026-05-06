@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mock 3 — Magazine / Editorial · Ennakhil Resort</title>
+<style>
+  :root {
+    --bg: #fbf8f1;
+    --paper: #ffffff;
+    --ink: #1c1a14;
+    --ink-muted: #4f4a3f;
+    --ink-tertiary: #8a8170;
+    --rule: rgba(0,0,0,0.12);
+    --accent: #6f3b1d;
+    --accent-soft: #ede1cf;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Charter", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .sans { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; }
+  .doc { max-width: 1180px; margin: 0 auto; padding: 56px 72px 120px; }
+
+  /* Masthead */
+  .mast {
+    border-top: 4px double var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 14px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 56px;
+  }
+  .mast .title { font-weight: 600; letter-spacing: 0.36em; }
+
+  /* Cover */
+  .cover {
+    text-align: center;
+    margin-bottom: 80px;
+    padding-bottom: 64px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cover .eyebrow {
+    font-family: -apple-system, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .cover h1 {
+    margin: 0 0 24px;
+    font-size: 96px;
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    font-style: italic;
+  }
+  .cover .deck-text {
+    max-width: 60ch;
+    margin: 0 auto 32px;
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+  .cover .byline {
+    font-family: -apple-system, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+  }
+
+  /* Two-column body */
+  .article {
+    column-count: 2;
+    column-gap: 56px;
+    column-rule: 1px solid var(--rule);
+  }
+  .article p {
+    margin: 0 0 18px;
+    text-align: justify;
+    hyphens: auto;
+  }
+  .article p.lede:first-child::first-letter {
+    font-size: 72px;
+    float: left;
+    line-height: 0.85;
+    padding: 6px 12px 0 0;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .section-title {
+    font-family: -apple-system, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    column-span: all;
+    text-align: center;
+    margin: 56px 0 28px;
+    border-top: 1px solid var(--rule);
+    padding-top: 28px;
+    font-weight: 600;
+  }
+  h2.head {
+    font-size: 38px;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    column-span: all;
+    margin: 0 0 32px;
+    max-width: 22ch;
+    line-height: 1.15;
+  }
+
+  /* Pull quote */
+  .pull {
+    column-span: all;
+    margin: 36px auto;
+    max-width: 70%;
+    text-align: center;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 28px 0;
+  }
+  .pull q {
+    quotes: "“" "”";
+    font-size: 30px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+  }
+  .pull .src {
+    font-family: -apple-system, sans-serif;
+    margin-top: 18px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    font-weight: 600;
+  }
+
+  /* Sidebar / callout */
+  .sidebar {
+    break-inside: avoid;
+    background: var(--accent-soft);
+    padding: 22px 24px;
+    margin: 0 0 24px;
+    border-left: 3px solid var(--accent);
+    font-family: -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .sidebar h4 {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .sidebar p { margin: 0 0 8px; text-align: left; }
+  .sidebar ul { margin: 6px 0; padding-left: 18px; }
+  .sidebar li { margin-bottom: 4px; }
+
+  /* Comp set table */
+  .compset {
+    column-span: all;
+    margin: 32px 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .compset table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: -apple-system, sans-serif;
+    font-size: 13px;
+  }
+  .compset thead th {
+    text-align: left;
+    padding: 14px 10px 12px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    border-bottom: 1px solid var(--rule);
+    font-weight: 600;
+  }
+  .compset tbody td {
+    padding: 14px 10px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .compset tbody tr:last-child td { border-bottom: none; }
+  .compset td.brand strong { font-weight: 600; }
+  .compset td.brand em { color: var(--ink-tertiary); font-style: italic; font-size: 12px; }
+
+  /* KPI strip */
+  .kpis {
+    column-span: all;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    margin: 40px 0;
+    padding: 28px 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    font-family: -apple-system, sans-serif;
+  }
+  .kpi { text-align: center; }
+  .kpi .num {
+    font-family: "Charter", Georgia, serif;
+    font-size: 44px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .kpi .lbl {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+  }
+
+  /* Marginalia tag */
+  .tag {
+    display: inline-block;
+    font-family: -apple-system, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 3px 8px;
+    margin-right: 6px;
+    font-weight: 500;
+  }
+
+  strong { font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="doc">
+
+  <div class="mast">
+    <div>Vela Advisory · Concept Briefs</div>
+    <div class="title">Ennakhil Dossier</div>
+    <div>Volume I · No. 03 · 05.05.2026</div>
+  </div>
+
+  <!-- Cover -->
+  <div class="cover">
+    <div class="eyebrow">A Concept Brief for The House Hotel</div>
+    <h1>Ennakhil<br>Resort</h1>
+    <p class="deck-text">228 keys at the threshold where Marrakech ends and the Atlas begins — a contemporary estate built for arrivals that feel like discoveries.</p>
+    <div class="byline">Marrakech, Morocco · Management Contract · Greenfield · FY2027</div>
+  </div>
+
+  <!-- Article -->
+  <div class="article">
+
+    <h2 class="head">A market<br>that bifurcates,<br>and a corridor<br>still unclaimed.</h2>
+
+    <p class="lede">Marrakech recorded roughly four million visitors and twelve million overnight stays in 2024, with city-wide occupancy above 72 percent and luxury supply growing 22 percent year-on-year. The pipeline is heavy — Lodging Econometrics counts twenty-five projects and 4,586 rooms in the city alone — and yet the structure of the market remains stubbornly bipolar.</p>
+
+    <p>At one pole sit the commodity all-inclusive resorts of the Palmeraie corridor: Riu, Be Live, Barceló, drawing volume leisure at $120 to $200 a night. At the other, the ultra-luxury palaces of the medina and Hivernage — Royal Mansour, La Mamounia, Amanjena — set the ceiling at $1,300 and above. Between these poles, in the eastern Ennakhil corridor, no established design-led upper-upscale lifestyle resort exists.</p>
+
+    <p>Kimpton's 67-key arrival in the southwest corridor in late 2026 is the only signal that other operators see this gap. It is on a different axis. The first-mover advantage in the eastern corridor is time-sensitive but currently unclaimed.</p>
+
+    <div class="sidebar">
+      <h4>Owner Snapshot</h4>
+      <p><strong>LRHN — Les Résidences Hôtelières du Nord.</strong> Active multi-tier Hilton developer in northern Morocco. Confirmed pipeline: Tapestry Chefchaouen (100 keys, 2028) and Hilton Garden Inn Tetouan (97 keys, 2029).</p>
+      <p>The Marrakech project marks geographic expansion outside the northern footprint. Engagement of In Extenso TCH (Paris) for an open operator selection signals that LRHN is <em>not</em> pre-committed to Hilton on this asset.</p>
+    </div>
+
+    <p>The site itself is a five-hectare plot at the junction of the route de Fès and the route d'Ouarzazate, twelve kilometres from the city centre, with unobstructed views toward the High Atlas and a documented amber dust-light at dawn and dusk. Five hundred metres from the Marrakech palm grove, adjacent to a sixteen-hectare luxury development whose brand affiliation has not yet been disclosed.</p>
+
+    <p>The thesis writes itself, but only just. The House Hotel's design-led <em>understated contemporary lux</em> is not a brand description — it is the only credible answer to a corridor where palace nostalgia would feel out of place and all-inclusive efficiency would forfeit the view.</p>
+
+    <div class="pull">
+      <q>Built for arrivals that feel like discoveries, days that orient themselves to the mountain horizon, and a kind of unhurried Moroccan modernism that the medina hotels cannot give and the all-inclusive resorts have never tried.</q>
+      <div class="src">— The Vision Statement</div>
+    </div>
+
+    <!-- Comp set table -->
+    <div class="compset">
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Distance / Axis</th>
+            <th>Keys</th>
+            <th>Rate from</th>
+            <th>Position</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="brand"><strong>Amanjena</strong> <em>— Aman</em></td><td>~12 km, N9</td><td>39 + 6</td><td>$1,296</td><td>Ultra-luxury ceiling</td></tr>
+          <tr><td class="brand"><strong>Selman Marrakech</strong> <em>— Indep.</em></td><td>3–4 km medina</td><td>55 + 5</td><td>—</td><td>Design-led urban</td></tr>
+          <tr><td class="brand"><strong>Fairmont Royal Palm</strong> <em>— Accor</em></td><td>~12 km SW</td><td>Large</td><td>MAD 2,758</td><td>Big-box 5★</td></tr>
+          <tr><td class="brand"><strong>Nobu Marrakech</strong></td><td>Hivernage</td><td>71 ste</td><td>$201–1,007</td><td>Lifestyle urban</td></tr>
+          <tr><td class="brand"><strong>Kimpton Marrakech</strong> <em>— pipeline</em></td><td>SW corridor</td><td>67</td><td>Q4 2026</td><td>Closest tier comp</td></tr>
+          <tr><td class="brand"><strong>Riu / Be Live / Barceló</strong></td><td>Palmeraie</td><td>—</td><td>$60–90</td><td>Commodity floor</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-title">II · The Numbers</div>
+
+    <p>The In Extenso feasibility study targets a stabilised FY2030 ADR of 1,709 MAD — roughly $170 — with 74 percent occupancy and a revenue mix of 52 percent rooms, 40 percent food and beverage, 8 percent other. The food and beverage share runs above the 20 to 25 percent global hotel norm, but is plausible for a design-led suburban resort with destination outlets and a captive twelve-kilometre radius. CBRE's 2025 hotel research confirms resort F&amp;B is leading industry growth.</p>
+
+    <div class="kpis">
+      <div class="kpi"><div class="num">$170</div><div class="lbl">Stabilised ADR</div></div>
+      <div class="kpi"><div class="num">74%</div><div class="lbl">Occupancy</div></div>
+      <div class="kpi"><div class="num">+32%</div><div class="lbl">RevPAR uplift</div></div>
+      <div class="kpi"><div class="num">33%</div><div class="lbl">GOP after fees</div></div>
+    </div>
+
+    <p>The arithmetic is plausible only with a defensible brand position. Twenty-five new projects in the city pipeline will harden the existing tiers, not challenge them. The premium The House Hotel commands — over Riu in the corridor, beneath Amanjena on the same N9 axis — is a function of identity, not square metres.</p>
+
+    <div class="sidebar">
+      <h4>Pillars · Four Anchors</h4>
+      <ul>
+        <li><strong>Atlas Threshold</strong> — public spaces oriented to the mountain horizon and amber dust-light.</li>
+        <li><strong>Living Maker Souk</strong> — a working craft village within the property; rotating Marrakech artisans.</li>
+        <li><strong>Garden as Story</strong> — five hectares as a single landscape composition; gardens as circulation.</li>
+        <li><strong>Resort MICE Pavilion</strong> — 500–600 m² ballroom; the only lifestyle alternative to medina palaces.</li>
+      </ul>
+    </div>
+
+    <p>What the brief proposes — and what the corridor will reward — is a property that reads as a cultural argument as much as a commercial one. A material palette anchored in Amazigh, not Arab-Andalusian. Pisé walls, tadelakt finishes, hanbel weavings from named Ourika cooperatives, Tamegroute green-glaze ceramics. Architecture as desert modernism, not riad nostalgia.</p>
+
+    <p>The Living Maker Souk is the programmatic counterpart to the material palette: a working studio cluster within the resort's garden zone where rotating artisans produce pieces incorporated into the hotel and available for purchase. Quarterly artisan rotations create a returning-guest loop, and a partnership corridor with the Musée d'Art Contemporain Africain Al Maaden — eight kilometres further south on the same N9 axis — supplies the cultural infrastructure no other non-medina hotel can structurally claim.</p>
+
+    <div class="pull">
+      <q>Each space carries one subtle Moroccan gesture, thoughtfully integrated rather than decorative. No lantern clichés. No heavy mosaics.</q>
+      <div class="src">— THH Marrakech Brand Precedent</div>
+    </div>
+
+    <p><span class="tag">Risk</span> Roughly fifteen to twenty percent of African pipeline historically slips twelve months or more. A buffer should be built in. If opening slips to FY2028, stabilisation moves to FY2031 — beyond the World Cup peak — a material underwriting consideration.</p>
+
+    <p><span class="tag">Open</span> Ten questions for the client remain on the table, foremost among them Kerten's actual standard HMA terms (the Commercial Terms section uses boutique-international industry norms that must be replaced before commercial proposal stage), the operator-level position on all-inclusive within The House Hotel brand, and the UAE–Morocco withholding tax treaty position on management fees.</p>
+
+    <p>None of these are obstacles. They are the working agenda of a deal that, by every available signal, is structured to be done.</p>
+
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mock 2 — Dashboard + Drill-down · Ennakhil Resort</title>
+<style>
+  :root {
+    --bg: #f6f4ee;
+    --surface: #ffffff;
+    --ink: #15140f;
+    --ink-muted: #5a544a;
+    --ink-tertiary: #908878;
+    --rule: rgba(0,0,0,0.08);
+    --rule-strong: rgba(0,0,0,0.16);
+    --accent: #6f3b1d;
+    --accent-soft: #f1e6d8;
+    --pos: #2f6b3a;
+    --neg: #a23a2c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .shell { max-width: 1280px; margin: 0 auto; padding: 32px; }
+
+  /* Top bar */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule-strong);
+    margin-bottom: 32px;
+  }
+  .crumbs { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-tertiary); }
+  .crumbs strong { color: var(--ink); font-weight: 600; }
+  .topbar .right { font-size: 12px; color: var(--ink-muted); }
+
+  /* Hero */
+  .hero {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 40px 44px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    margin: 0 0 8px;
+    font-size: 38px;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .hero .sub {
+    color: var(--ink-muted);
+    font-size: 15px;
+    margin-bottom: 28px;
+  }
+  .thesis {
+    border-left: 3px solid var(--accent);
+    padding: 6px 20px;
+    font-size: 17px;
+    line-height: 1.5;
+    max-width: 80ch;
+    color: var(--ink);
+  }
+  .thesis strong { color: var(--accent); font-weight: 500; }
+
+  /* KPI strip */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-bottom: 24px;
+  }
+  .kpi {
+    background: var(--surface);
+    padding: 22px 20px;
+  }
+  .kpi .lbl {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin-bottom: 8px;
+  }
+  .kpi .num {
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .kpi .delta {
+    font-size: 12px;
+    margin-top: 4px;
+    color: var(--ink-muted);
+  }
+  .kpi .delta.up { color: var(--pos); }
+  .kpi .delta.down { color: var(--neg); }
+
+  /* Grid for cards */
+  .grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 28px;
+  }
+  .panel h2 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  .panel .panel-sub {
+    color: var(--ink-tertiary);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  /* Comp set chart */
+  .ladder { margin-top: 16px; }
+  .ladder-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 90px;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 13px;
+  }
+  .ladder-row:last-child { border-bottom: none; }
+  .ladder-bar {
+    height: 8px;
+    background: var(--accent-soft);
+    position: relative;
+  }
+  .ladder-bar .fill {
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+  }
+  .ladder-row .price {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-muted);
+  }
+  .ladder-row .name strong { font-weight: 500; }
+  .ladder-row.highlight .name strong { color: var(--accent); }
+  .ladder-row.highlight .ladder-bar { background: rgba(111,59,29,0.18); }
+  .ladder-row.highlight .ladder-bar .fill { background: var(--accent); }
+
+  /* Key messages */
+  .messages-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .msg {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 22px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .msg:hover { border-color: var(--accent); }
+  .msg .num {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .msg h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .msg p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+  .msg .expand {
+    margin-top: 14px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  /* Pillars */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .pillar {
+    border: 1px solid var(--rule);
+    padding: 20px;
+    background: var(--bg);
+  }
+  .pillar .icon {
+    width: 28px; height: 28px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    display: grid; place-items: center;
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+  .pillar h4 { margin: 0 0 6px; font-size: 14px; font-weight: 500; }
+  .pillar p { margin: 0; font-size: 12px; color: var(--ink-muted); line-height: 1.5; }
+
+  /* Drill-down section */
+  details.drill {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    margin-bottom: 12px;
+  }
+  details.drill summary {
+    padding: 18px 24px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+    font-size: 15px;
+  }
+  details.drill summary::-webkit-details-marker { display: none; }
+  details.drill summary::after {
+    content: '+';
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 300;
+  }
+  details.drill[open] summary::after { content: '−'; }
+  details.drill .body {
+    padding: 4px 24px 24px;
+    color: var(--ink-muted);
+    font-size: 14px;
+  }
+
+  /* Tag */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* Section header */
+  .section-h {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin: 36px 0 16px;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <div class="topbar">
+    <div class="crumbs">Concept Brief · <strong>Ennakhil Resort</strong> · The House Hotel</div>
+    <div class="right">Generated 2026-05-05 · <a href="#" style="color: var(--accent); text-decoration: none;">Export PDF</a></div>
+  </div>
+
+  <!-- Hero with thesis -->
+  <div class="hero">
+    <h1>Ennakhil Resort</h1>
+    <div class="sub">Management contract · 228 keys · Ennakhil district, Marrakech · Greenfield · Target FY2027</div>
+    <div class="thesis">
+      The House Hotel's design-led <strong>"understated contemporary lux"</strong> positioning fills the unclaimed white space in Marrakech's Ennakhil corridor — between the commodity all-inclusive resorts of the Palmeraie and the ultra-luxury palaces of the medina/Hivernage.
+    </div>
+  </div>
+
+  <!-- KPI strip -->
+  <div class="kpis">
+    <div class="kpi">
+      <div class="lbl">Keys</div>
+      <div class="num">228</div>
+      <div class="delta">220 rooms + 8 villas</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Stabilised ADR</div>
+      <div class="num">$170</div>
+      <div class="delta up">+32% vs 2023 base</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Stabilised RevPAR</div>
+      <div class="num">$126</div>
+      <div class="delta">1,265 MAD · FY2030</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Occupancy</div>
+      <div class="num">74%</div>
+      <div class="delta">vs market 71% H1'25</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">GOP after fees</div>
+      <div class="num">33%</div>
+      <div class="delta">~67M MAD</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">F&amp;B share</div>
+      <div class="num">40%</div>
+      <div class="delta up">vs 20–25% global</div>
+    </div>
+  </div>
+
+  <!-- Two column: comp ladder + pillars -->
+  <div class="grid">
+    <div class="panel">
+      <h2>Comp Set ADR Ladder</h2>
+      <div class="panel-sub">Marrakech 5★ · May 2026 live rates</div>
+      <div class="ladder">
+        <div class="ladder-row">
+          <div class="name"><strong>Royal Mansour</strong></div>
+          <div class="ladder-bar"><div class="fill" style="width: 100%"></div></div>
+          <div class="price">$1,658+</div>
+        </div>
+        <div class="ladder-row">
+          <div class="name"><strong>Amanjena</strong></div>
+          <div class="ladder-bar"><div class="fill" style="width: 78%"></div></div>
+          <div class="price">$1,296</div>
+        </div>
+        <div class="ladder-row">
+          <div class="name"><strong>Nobu Marrakech</strong></div>
+          <div class="ladder-bar"><div class="fill" style="width: 60%"></div></div>
+          <div class="price">$594–1,007</div>
+        </div>
+        <div class="ladder-row">
+          <div class="name"><strong>La Mamounia</strong> <span style="color: var(--ink-tertiary); font-size:11px">entry</span></div>
+          <div class="ladder-bar"><div class="fill" style="width: 32%"></div></div>
+          <div class="price">$524</div>
+        </div>
+        <div class="ladder-row highlight">
+          <div class="name"><strong>Ennakhil Resort</strong> <span class="tag">Target</span></div>
+          <div class="ladder-bar"><div class="fill" style="width: 22%"></div></div>
+          <div class="price">$170 stab.</div>
+        </div>
+        <div class="ladder-row">
+          <div class="name"><strong>Riu / Be Live</strong> <span style="color: var(--ink-tertiary); font-size:11px">all-inc.</span></div>
+          <div class="ladder-bar"><div class="fill" style="width: 9%"></div></div>
+          <div class="price">$60–90</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Owner Snapshot</h2>
+      <div class="panel-sub">LRHN · Les Résidences Hôtelières du Nord</div>
+      <p style="font-size: 13px; line-height: 1.6;"><strong style="font-weight: 500;">Active Hilton developer.</strong> Confirmed pipeline: Tapestry Chefchaouen (100k, 2028), HGI Tetouan (97k, 2029).</p>
+      <p style="font-size: 13px; line-height: 1.6;"><strong style="font-weight: 500;">Open selection.</strong> In Extenso TCH engaged → not pre-committed to Hilton for Marrakech.</p>
+      <p style="font-size: 13px; line-height: 1.6;"><strong style="font-weight: 500;">Motivation.</strong> Asset development and long-term return; retains real estate and goodwill; seeks international operator for 5★ resort.</p>
+      <p style="font-size: 13px; line-height: 1.6; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--rule); color: var(--ink-tertiary);"><em>Red lines:</em> None stated.</p>
+    </div>
+  </div>
+
+  <!-- Pillars -->
+  <div class="panel">
+    <h2>Concept Pillars</h2>
+    <div class="panel-sub">Four design and programming anchors</div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="icon">01</div>
+        <h4>Atlas Threshold</h4>
+        <p>Public spaces, restaurants, pools, rooms oriented to the unobstructed Atlas silhouette and amber dust-light of the N9.</p>
+      </div>
+      <div class="pillar">
+        <div class="icon">02</div>
+        <h4>Living Maker Souk</h4>
+        <p>Working craft village within the property — rotating Marrakech artisans producing limited pieces for rooms, restaurants, boutique.</p>
+      </div>
+      <div class="pillar">
+        <div class="icon">03</div>
+        <h4>Garden as Story</h4>
+        <p>5 ha plot as one landscape composition — spine, kitchen garden, water rills referencing khettara hydraulic heritage.</p>
+      </div>
+      <div class="pillar">
+        <div class="icon">04</div>
+        <h4>Resort MICE Pavilion</h4>
+        <p>Purpose-built 500–600 m² ballroom — only lifestyle alternative to medina palaces for Pan-African / European corporate events.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key messages -->
+  <div class="section-h">Key Messages to Owner</div>
+  <div class="messages-grid">
+    <div class="msg">
+      <div class="num">Message 01</div>
+      <h3>Lock the lifestyle position before the pipeline floods</h3>
+      <p>25 projects / 4,586 rooms in confirmed Marrakech pipeline will harden commodity and ultra-luxury tiers, not challenge them. Anchor the upper-upscale identity now to protect ADR through FIFA 2030.</p>
+      <div class="expand">Read full message →</div>
+    </div>
+    <div class="msg">
+      <div class="num">Message 02</div>
+      <h3>A brand built for an owner who retains everything</h3>
+      <p>Pure HMA — no franchise encumbrance, no centralised distribution surcharge, no key money. The exact structure LRHN already operates with Hilton.</p>
+      <div class="expand">Read full message →</div>
+    </div>
+    <div class="msg">
+      <div class="num">Message 03</div>
+      <h3>F&amp;B as a revenue stream, not a cost centre</h3>
+      <p>12 km from city centre with no significant F&amp;B within walking distance is structural advantage. Charcood and Joontos draw non-resident covers; 40% F&amp;B share is achievable.</p>
+      <div class="expand">Read full message →</div>
+    </div>
+    <div class="msg">
+      <div class="num">Message 04</div>
+      <h3>MICE as stabilisation, not speculation</h3>
+      <p>Properly programmed 500–600 m² pavilion turns shoulder-period weekday occupancy into predictable revenue. FIFA 2030 + national convention centre = structural tailwind.</p>
+      <div class="expand">Read full message →</div>
+    </div>
+  </div>
+
+  <!-- Drill-down sections -->
+  <div class="section-h">Detailed sections — expand to read</div>
+
+  <details class="drill">
+    <summary>Market Dynamics &amp; Pipeline Pressure</summary>
+    <div class="body">
+      <p>Marrakech recorded ~4M visitors and 12M overnight stays in 2024, with city-wide occupancy above 72% and luxury supply growing 22% YoY. H1 2025 occupancy held at 71%. Lodging Econometrics counts 25 projects / 4,586 rooms in pipeline, anchored by the Rixos/Alliances ~$300M two-resort programme and Kimpton (67 keys, Q4 2026).</p>
+      <p><strong style="color: var(--ink); font-weight: 500;">Market gap.</strong> The market bifurcates between commodity all-inclusive (Palmeraie) and ultra-luxury palaces (medina/Hivernage). No established design-led upper-upscale lifestyle resort sits between these poles in the Ennakhil corridor.</p>
+    </div>
+  </details>
+
+  <details class="drill">
+    <summary>Commercial Terms <span class="tag" style="background: #fde9d8; color: #a85a1f;">Assumptions</span></summary>
+    <div class="body">
+      <p>Boutique-international HMA assumptions, flagged for replacement with Kerten standard term sheet. Base management fee 3.0–4.0% gross revenue · IMF 8–12% Adjusted GOP above 10% priority return · S&amp;M 1.0–1.5% · TSA $500K–1.5M or 1–3% hard cost · Term 10–15 years + 5-year renewals · No key money expected · No reservation/loyalty fee.</p>
+      <p>Morocco-specific: 10% WHT on gross fees to non-resident operator (UAE–Morocco treaty relief to verify); 10% VAT accommodation; tourism-sector full IS exemption first 5 years.</p>
+    </div>
+  </details>
+
+  <details class="drill">
+    <summary>Phasing &amp; Timeline</summary>
+    <div class="body">
+      <p>Pre-HMA Q2–Q3 2026 → HMA + TSA Q4 2026–Q1 2027 → Design &amp; permitting 2027 → Construction 2027–2030 → Pre-opening mid-2027 → Ramp 68/70/72/74% FY27–FY30. <strong style="color: var(--ink); font-weight: 500;">Risk:</strong> ~15–20% African pipeline historically slips 12+ months — buffer recommended. Slippage to FY2028 moves stabilisation past the World Cup peak.</p>
+    </div>
+  </details>
+
+  <details class="drill">
+    <summary>Open Questions for Client (10)</summary>
+    <div class="body">
+      <p>Kerten standard HMA terms · all-inclusive operating model vs THH brand standards · full IE TCH study access · UAE–Morocco WHT treaty position · adjacent 16 ha development status · LRHN Hilton commitment status · owner priority return alignment · MACAAL partnership feasibility · Maker Souk sustainability post-opening · Lighthouse access for 5★ MAD-denominated series.</p>
+    </div>
+  </details>
+
+</div>
+
+</body>
+</html>

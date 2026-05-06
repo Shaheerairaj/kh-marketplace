@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mock 1 — Pitch Deck Hybrid · Ennakhil Resort</title>
+<style>
+  :root {
+    --bg: #0e0d0b;
+    --surface: #1a1816;
+    --ink: #f5f1ea;
+    --ink-muted: #b8b0a3;
+    --ink-tertiary: #6e665a;
+    --rule: rgba(255,255,255,0.08);
+    --accent: #c8956a;
+    --accent-deep: #6f3b1d;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    overflow: hidden;
+  }
+  .deck {
+    display: flex;
+    height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+  }
+  .slide {
+    flex: 0 0 100vw;
+    height: 100vh;
+    padding: 64px 96px;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    border-right: 1px solid var(--rule);
+  }
+  .slide-num {
+    position: absolute;
+    top: 32px;
+    right: 48px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--ink-tertiary);
+    text-transform: uppercase;
+  }
+  .slide-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+    font-weight: 500;
+  }
+  .slide h1 {
+    font-size: 88px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin: 0 0 28px;
+  }
+  .slide h2 {
+    font-size: 56px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 0 0 36px;
+    max-width: 16ch;
+  }
+  .slide .lead {
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    max-width: 60ch;
+    font-weight: 300;
+  }
+  .meta-strip {
+    display: flex;
+    gap: 48px;
+    margin-top: 64px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+  }
+  .meta-strip .item .k {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    margin-bottom: 6px;
+  }
+  .meta-strip .item .v {
+    font-size: 18px;
+    font-weight: 400;
+  }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 28px;
+  }
+  .card .pillar-num {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    font-size: 22px;
+    font-weight: 400;
+    margin: 0 0 12px;
+    line-height: 1.2;
+  }
+  .card p {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 32px;
+    margin-top: 48px;
+  }
+  .kpi .num {
+    font-size: 56px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .kpi .lbl {
+    font-size: 13px;
+    color: var(--ink-muted);
+    line-height: 1.4;
+  }
+  .compset {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+    gap: 0;
+    margin-top: 32px;
+    border-top: 1px solid var(--rule);
+  }
+  .compset > div {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 14px;
+  }
+  .compset .h {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+  }
+  .quote-block {
+    border-left: 3px solid var(--accent);
+    padding-left: 28px;
+    max-width: 70ch;
+  }
+  .quote-block .q {
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .quote-block .src {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--ink-tertiary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .nav {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+  }
+  .nav-dot {
+    width: 24px;
+    height: 3px;
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .nav-dot.active { background: var(--accent); }
+  .hint {
+    position: fixed;
+    bottom: 28px;
+    right: 32px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-tertiary);
+    z-index: 10;
+  }
+  .bg-warm {
+    background: linear-gradient(135deg, #1a1614 0%, #2a1f17 100%);
+  }
+  .accent-text { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- Slide 1: Cover -->
+  <div class="slide bg-warm">
+    <div class="slide-num">01 / 06</div>
+    <div class="slide-eyebrow">Concept Brief</div>
+    <h1>Ennakhil<br>Resort</h1>
+    <p class="lead">A contemporary estate at the threshold where Marrakech ends and the Atlas begins.</p>
+    <div class="meta-strip">
+      <div class="item"><span class="k">Brand</span><span class="v">The House Hotel</span></div>
+      <div class="item"><span class="k">Deal</span><span class="v">Management contract</span></div>
+      <div class="item"><span class="k">Keys</span><span class="v">228</span></div>
+      <div class="item"><span class="k">Location</span><span class="v">Ennakhil, Marrakech</span></div>
+      <div class="item"><span class="k">Opening</span><span class="v">FY2027 target</span></div>
+    </div>
+  </div>
+
+  <!-- Slide 2: Positioning Thesis -->
+  <div class="slide">
+    <div class="slide-num">02 / 06</div>
+    <div class="slide-eyebrow">Positioning Thesis</div>
+    <div class="quote-block">
+      <p class="q">The House Hotel's design-led "understated contemporary lux" positioning fills the unclaimed white space in Marrakech's Ennakhil corridor — between the commodity all-inclusive resorts of the Palmeraie and the ultra-luxury palaces of the medina/Hivernage.</p>
+      <p class="src">Target — Design-savvy leisure, families, resort-MICE</p>
+    </div>
+  </div>
+
+  <!-- Slide 3: Four Pillars -->
+  <div class="slide">
+    <div class="slide-num">03 / 06</div>
+    <div class="slide-eyebrow">Concept Direction</div>
+    <h2>Four pillars.</h2>
+    <div class="grid-4">
+      <div class="card">
+        <div class="pillar-num">01</div>
+        <h3>Atlas Threshold</h3>
+        <p>Every public space, restaurant, pool, and room oriented to the unobstructed Atlas silhouette and amber dust-light of the N9.</p>
+      </div>
+      <div class="card">
+        <div class="pillar-num">02</div>
+        <h3>Living Maker Souk</h3>
+        <p>A working craft village within the property — rotating Marrakech artisans producing limited pieces that flow into rooms, restaurants, and the boutique.</p>
+      </div>
+      <div class="card">
+        <div class="pillar-num">03</div>
+        <h3>Garden as Story</h3>
+        <p>The 5 ha plot as a single landscape composition — garden spine, kitchen garden, water rills referencing khettara heritage. Gardens as circulation.</p>
+      </div>
+      <div class="card">
+        <div class="pillar-num">04</div>
+        <h3>Resort MICE Pavilion</h3>
+        <p>A purpose-built 500–600 m² ballroom — the only lifestyle alternative to medina palaces for Pan-African and European corporate events.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 4: Competitive Set -->
+  <div class="slide">
+    <div class="slide-num">04 / 06</div>
+    <div class="slide-eyebrow">Competitive Set</div>
+    <h2>Above the all-inclusive floor.<br>Below the palace ceiling.</h2>
+    <div class="compset">
+      <div class="h">Property</div>
+      <div class="h">Distance</div>
+      <div class="h">Keys</div>
+      <div class="h">Rate from</div>
+
+      <div>Amanjena <span style="color: var(--ink-tertiary)">— Aman</span></div>
+      <div>~12 km, N9</div>
+      <div>39 + 6</div>
+      <div class="accent-text">$1,296</div>
+
+      <div>Selman Marrakech <span style="color: var(--ink-tertiary)">— Indep.</span></div>
+      <div>3–4 km medina</div>
+      <div>55 + 5</div>
+      <div>Not surfaced</div>
+
+      <div>Fairmont Royal Palm <span style="color: var(--ink-tertiary)">— Accor</span></div>
+      <div>~12 km SW</div>
+      <div>Large 5★</div>
+      <div>MAD 2,758</div>
+
+      <div>Nobu Marrakech <span style="color: var(--ink-tertiary)">— Hivernage</span></div>
+      <div>City centre</div>
+      <div>71 suites</div>
+      <div>$201–1,007</div>
+
+      <div>Kimpton Marrakech <span style="color: var(--ink-tertiary)">— IHG, pipeline</span></div>
+      <div>SW corridor</div>
+      <div>67</div>
+      <div>Q4 2026</div>
+    </div>
+  </div>
+
+  <!-- Slide 5: Financial Anchors -->
+  <div class="slide bg-warm">
+    <div class="slide-num">05 / 06</div>
+    <div class="slide-eyebrow">Financial Anchors · IE Stabilised FY2030</div>
+    <h2>The numbers.</h2>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="num">228</div>
+        <div class="lbl">Keys<br>220 rooms + 8 villas</div>
+      </div>
+      <div class="kpi">
+        <div class="num">$170</div>
+        <div class="lbl">Stabilised ADR<br>1,709 MAD</div>
+      </div>
+      <div class="kpi">
+        <div class="num">+32%</div>
+        <div class="lbl">RevPAR uplift<br>vs 2023 baseline</div>
+      </div>
+      <div class="kpi">
+        <div class="num">74%</div>
+        <div class="lbl">Stabilised<br>occupancy</div>
+      </div>
+      <div class="kpi">
+        <div class="num">33%</div>
+        <div class="lbl">GOP after fees<br>~67M MAD</div>
+      </div>
+    </div>
+    <p class="lead" style="margin-top: 64px; font-size: 16px;">Revenue mix — Rooms 52% · F&amp;B 40% · Other 8%. F&amp;B share runs above the 20–25% global hotel norm but is plausible for a design-led suburban resort with destination outlets and a captive 12 km radius.</p>
+  </div>
+
+  <!-- Slide 6: Key Message -->
+  <div class="slide">
+    <div class="slide-num">06 / 06</div>
+    <div class="slide-eyebrow">Key Message · 01 of 04</div>
+    <div class="quote-block">
+      <p class="q">Lock the lifestyle position before the pipeline floods.</p>
+    </div>
+    <p class="lead" style="margin-top: 36px;">25 projects / 4,586 rooms in Marrakech's confirmed pipeline will harden the commodity and ultra-luxury tiers, not challenge them. Anchoring Ennakhil to The House Hotel's upper-upscale identity now secures a positioning no greenfield competitor can replicate before 2027 opening — and the brand premium protects ADR through the FIFA 2030 demand ramp.</p>
+  </div>
+
+</div>
+
+<div class="nav" id="nav"></div>
+<div class="hint">Scroll horizontally · ← → keys</div>
+
+<script>
+  const deck = document.getElementById('deck');
+  const slides = deck.querySelectorAll('.slide');
+  const nav = document.getElementById('nav');
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => deck.scrollTo({ left: i * window.innerWidth, behavior: 'smooth' });
+    nav.appendChild(dot);
+  });
+  deck.addEventListener('scroll', () => {
+    const i = Math.round(deck.scrollLeft / window.innerWidth);
+    document.querySelectorAll('.nav-dot').forEach((d, j) => d.classList.toggle('active', i === j));
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') deck.scrollBy({ left: window.innerWidth, behavior: 'smooth' });
+    if (e.key === 'ArrowLeft')  deck.scrollBy({ left: -window.innerWidth, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>
