@@ -32,7 +32,6 @@ Session Progress:
   - [ ] Section 14 — Insider Knowledge _(skip if not applicable)_
   - [ ] Section 15 — Open Questions _(skip if not applicable)_
 - [ ] Decisions Made card displayed
-- [ ] HTML brief generated
 ```
 
 ---
@@ -470,33 +469,5 @@ One row per section — label on the left, concise one-line decision on the righ
 Footer — separated from the rows above by a divider:
 `Full brief: [concept-brief-name].md — open in right-hand pane`
 
-After the card, proceed immediately to the Final Brief.
-
----
-
-## Final Brief — HTML Artifact
-
-Generate a self-contained HTML file with all CSS embedded in a `<style>` block. No external dependencies.
-
-**File name:** `concept-brief-[property-name].html` — same slug as the markdown artifact.
-
-Use the markdown artifact as the source of truth. Render all confirmed sections in schema order, from Property Metadata through to whichever optional sections were included.
-
-**Header block:**
-- Property name
-- Metadata row: brand · deal type · location · date generated
-- Divider separating the header from the sections below
-
-**Section blocks:** one block per Direction Document section, in schema order:
-- Section heading — acts as a label
-- Section content below the heading
-- Divider between sections
-
-**Content formatting:**
-- Field names as bold labels
-- Lists where the section content is a list
-- Sub-headings for sections that have sub-sections (e.g. Vision, Pillars, Target Guest)
-- Flagged or unavailable values marked as italic
-
-Write the file to the working directory. Once written, tell the user:
-*"Your full concept brief is saved as `[filename].html` — open it to review the complete document. Let me know if you'd like to change anything. When you're ready, run `/submit-brief` to send it to the pipeline."*
+After the card, tell the user:
+*"Your full concept brief is saved as `[filename].md` — open it in the right-hand pane to review. Let me know if you'd like to change anything. When you're ready, run `/submit-brief` to send it to the pipeline."*
