@@ -36,6 +36,14 @@ Session Progress:
 
 ---
 
+## Welcome
+
+When this skill first activates, display a Welcome card as the very first thing in the response — before the artifact check, before any other text or questions.
+
+Render an inline HTML card titled `KH House Pour` with a stylized SVG cocktail glass (coupe with olive garnish, gold accents on a dark panel, animated rising bubbles via SVG `<animate>`) on the left and the welcome line on the right: *"Welcome to the KH Direction Desk. Let's draft a brief worth checking into."*
+
+---
+
 ## Session Start
 
 Before beginning, check for two things:
@@ -92,7 +100,7 @@ Card title: `WHAT WAS CAPTURED`
 
 ## Phase B — Research
 
-Tell the user: *"Super complicated deep research being conducted for the remaining sections — this may take a moment. Grab a coffee while you wait."*
+Before invoking the research agents, display a brewing-coffee loader: an inline HTML card with a stylized SVG coffee cup (cream mug, dark coffee surface, three steam wisps animated rising via SVG `<animate>`) above a centered caption. Caption text: *"Super complicated deep research being conducted for the remaining sections — this may take a moment. Grab a coffee while you wait."*
 
 Invoke two instances of the `research` agent in parallel. Do not proceed until both return.
 
@@ -238,7 +246,7 @@ Once the user submits, acknowledge the confirmed values in one sentence, then pr
 
 ## Phase D — Deep Research
 
-Tell the user: *"Super complicated deep research being conducted for the remaining sections — this may take a moment. Grab a coffee while you wait."*
+Before invoking the research agents, display the same brewing-coffee loader as Phase B with this caption instead: *"More deep research incoming. Maybe upgrade to a flat white this time — this one's longer."*
 
 Invoke three instances of the `research` agent in parallel. Do not proceed to drafting until all three return.
 
