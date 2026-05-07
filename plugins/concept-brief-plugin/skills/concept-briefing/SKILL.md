@@ -40,7 +40,11 @@ Session Progress:
 
 When this skill first activates, display a Welcome card as the very first thing in the response — before the artifact check, before any other text or questions.
 
-Render an inline HTML card titled `KH House Pour` with a stylized SVG cocktail glass (coupe with olive garnish, gold accents on a dark panel, animated rising bubbles via SVG `<animate>`) on the left and the welcome line on the right: *"Welcome to the KH Direction Desk. Let's draft a brief worth checking into."*
+Display a welcome card as a markdown table:
+
+| | |
+|---|---|
+| **KH HOUSE POUR** | Welcome to the KH Direction Desk. Let's draft a brief worth checking into. |
 
 ---
 
@@ -77,32 +81,13 @@ If required fields are blank, ask only for those — do not re-show the full for
 
 Once all required fields are confirmed, display the "What Was Captured" card before proceeding to Phase B. Do not wait for user input — move immediately to Phase B.
 
-Display as an inline HTML card. Show blank optional fields as an em-dash.
-
-Card title: `WHAT WAS CAPTURED`
-
-**Group 1 — Property**
-- Property: [name] · [location] · [keys] keys
-- Brand: [brand]
-- Deal type: [deal type]
-
-**Group 2 — Owner**
-- Motivation: [primary motivation]
-- Red lines: [value or —]
-- Portfolio: [value or —]
-
-**Group 3 — Asset**
-- State: [current state]
-- Features: [standout features or —]
-- Insider knowledge: [value or —]
+Display the captured values as a markdown table titled `WHAT WAS CAPTURED`, grouped by Property, Owner, and Asset. Show blank optional fields as an em-dash.
 
 ---
 
 ## Phase B — Research
 
-Before invoking the research agents, display a brewing-coffee loader: an inline HTML card with a stylized SVG coffee cup (cream mug, dark coffee surface, three steam wisps animated rising via SVG `<animate>`) above a centered caption. Caption text: *"Super complicated deep research being conducted for the remaining sections — this may take a moment. Grab a coffee while you wait."*
-
-Invoke two instances of the `research` agent in parallel. Do not proceed until both return.
+Invoke two instances of the `research` agent in parallel. Do not proceed until both return. Each invocation must use 6 turns.
 
 ---
 
@@ -246,9 +231,7 @@ Once the user submits, acknowledge the confirmed values in one sentence, then pr
 
 ## Phase D — Deep Research
 
-Before invoking the research agents, display the same brewing-coffee loader as Phase B with this caption instead: *"More deep research incoming. Maybe upgrade to a flat white this time — this one's longer."*
-
-Invoke three instances of the `research` agent in parallel. Do not proceed to drafting until all three return.
+Invoke three instances of the `research` agent in parallel. Do not proceed to drafting until all three return. Each invocation must use 12 turns.
 
 Context to pass to all three invocations:
 - All Phase A answers (property metadata, owner context, asset assessment, insider knowledge)
@@ -458,24 +441,7 @@ Surface any gaps from the above sections that require client input before the pi
 
 When all applicable sections are written to the artifact, display the Decisions Made card.
 
-Display as an inline HTML card. Mark flagged or unavailable values.
-
-Card title: `DECISIONS MADE`
-
-One row per section — label on the left, concise one-line decision on the right:
-
-- Positioning: [one-line thesis]
-- Concept: [vision headline]
-- Key messages: [count] messages — [dominant theme, 3–4 words]
-- F&B: [brand names]
-- Wellness: [register, 4–6 words]
-- Experiences: [names with _(precedent)_ / _(original)_ labels]
-- Financial: [ADR range or _flagged_] · [occupancy or _flagged_]
-- Commercial: [key structure, 4–6 words]
-- Design: [design language, 4–6 words]
-
-Footer — separated from the rows above by a divider:
-`Full brief: [concept-brief-name].md — open in right-hand pane`
+Display the decisions as a markdown table titled `DECISIONS MADE`, one row per section with a concise one-line summary. Mark flagged or unavailable values. End with: `Full brief: [concept-brief-name].md — open in right-hand pane`
 
 After the card, tell the user:
 *"Your full concept brief is saved as `[filename].md` — open it in the right-hand pane to review. Let me know if you'd like to change anything. When you're ready, run `/submit-brief` to send it to the pipeline."*
